@@ -8,7 +8,10 @@ import java.util.Random;
 public class ClientMain {
     public static final SecureRandom SECURE_RANDOM = new SecureRandom();
     public static void main(String[] args) {
-
+        String sss = "10.0";
+        double ds = Double.valueOf(sss);
+        //Long ls = Long.valueOf(sss);
+        System.out.println(ds);
         long lo = SECURE_RANDOM.nextLong();
         long lo2 = SECURE_RANDOM.nextLong();
         System.out.println(lo+"");

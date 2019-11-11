@@ -6,6 +6,7 @@ package com.woniu.netmonitor.client;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+import com.woniu.netmonitor.configuration.WebSocketConfig;
 import com.woniu.netmonitor.dictionary.MessageBoxType;
 import com.woniu.netmonitor.entity.ArticleRecord;
 import com.woniu.netmonitor.util.*;
@@ -17,12 +18,15 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import org.apache.commons.lang.StringUtils;
+import org.java_websocket.client.WebSocketClient;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -51,14 +55,17 @@ public class NetMonitorClinet {
     private static String downloadFileName;
 
     private static String baseUrl;
+    private static String baseWsUrl;
 
     private static volatile Boolean isUpdateReady = true;
 
     private static List<ArticleRecord> articleRecordsForOneQuery;
+    private static List<UrlMonitorEntity> failedUrlsForOneQuery;
 
     private HttpTransferBean transferBean = (HttpTransferBean) SpringUtil.getBean("httpTransferBean");
     private LocalPropertyUtil localPropertyBean = (LocalPropertyUtil) SpringUtil.getBean("localPropertyBean");
     private WebClientUtil webClientBean = (WebClientUtil) SpringUtil.getBean("webClientBean");
+    private WebSocketConfig webSocketConfig = (WebSocketConfig) SpringUtil.getBean("webSocketConfig");
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -81,9 +88,13 @@ public class NetMonitorClinet {
         panel1 = new JPanel();
         label1 = new JLabel();
         subpanel3 = new JPanel();
+        panel5 = new JPanel();
         monitorList = new JLabel();
+        lb_urlNum = new JLabel();
         btn_update = new JButton();
+        panel6 = new JPanel();
         lb_updateState = new JLabel();
+        lb_alert = new JLabel();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
         txt_monitorList = new JTextArea();
@@ -196,18 +207,40 @@ public class NetMonitorClinet {
             {
                 subpanel3.setLayout(new GridLayout());
 
-                //---- monitorList ----
-                monitorList.setText("\u5df2\u76d1\u63a7\u7f51\u7ad9:");
-                monitorList.setHorizontalAlignment(SwingConstants.RIGHT);
-                subpanel3.add(monitorList);
+                //======== panel5 ========
+                {
+                    panel5.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+                    //---- monitorList ----
+                    monitorList.setText("\u5df2\u76d1\u63a7\u7f51\u7ad9:");
+                    monitorList.setHorizontalAlignment(SwingConstants.RIGHT);
+                    panel5.add(monitorList);
+
+                    //---- lb_urlNum ----
+                    lb_urlNum.setText("0\u4e2a");
+                    panel5.add(lb_urlNum);
+                }
+                subpanel3.add(panel5);
 
                 //---- btn_update ----
                 btn_update.setText("\u66f4\u65b0");
                 subpanel3.add(btn_update);
 
-                //---- lb_updateState ----
-                lb_updateState.setPreferredSize(new Dimension(150, 30));
-                subpanel3.add(lb_updateState);
+                //======== panel6 ========
+                {
+                    panel6.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+                    //---- lb_updateState ----
+                    lb_updateState.setPreferredSize(new Dimension(63, 17));
+                    panel6.add(lb_updateState);
+
+                    //---- lb_alert ----
+                    lb_alert.setIcon(null);
+                    lb_alert.setMaximumSize(new Dimension(16, 16));
+                    lb_alert.setMinimumSize(new Dimension(16, 16));
+                    panel6.add(lb_alert);
+                }
+                subpanel3.add(panel6);
             }
             monitorFrameContentPane.add(subpanel3, CC.xy(1, 7));
 
@@ -490,12 +523,23 @@ public class NetMonitorClinet {
         fileWriterBean.saveToFile(articleRecords);
     }
 
+    public void alertFailedUrlsForOneQuery(List<UrlMonitorEntity> urlMonitorEntities){
+        if (urlMonitorEntities!=null && urlMonitorEntities.size() > 0){
+            lb_alert.setEnabled(true);
+            failedUrlsForOneQuery = urlMonitorEntities;
+            lb_alert.setIcon(UIManager.getIcon("Table.descendingSortIcon"));
+        } else{
+            lb_alert.setIcon(null);
+            lb_alert.setEnabled(false); //没有失败的网址，则取消标签的点击事件。
+        }
+    }
+
     @Async
     public void updateAsyncTask() throws Exception {
         isUpdateReady = false;
         long start = System.currentTimeMillis();
         lb_updateState.setVisible(true);
-        lb_updateState.setText("服务器信息重新采集中...");
+        lb_updateState.setText("更新中...");
         StringBuilder urlPath = new StringBuilder(baseUrl);
         urlPath = urlPath.append(transferBean.getRootUrlPath()).
                 append(transferBean.getNetArticlePersistenceServerEndPoint());
@@ -504,12 +548,11 @@ public class NetMonitorClinet {
         String res;
         if (jsonResult.getReturnCode().equals("SUCC")) {
             res = "更新完成！耗时：" + ((end - start) / 1000) + "秒";
-            //lb_updateState.setText("更新完成");
+            lb_updateState.setText("更新完成");
         } else {
             res = "更新失败";
-            //lb_updateState.setText("更新失败");
+            lb_updateState.setText("更新失败");
         }
-        //lb_updateState.setText(res);
         messageFrame(MessageBoxType.INFO, res);
     }
 
@@ -558,6 +601,8 @@ public class NetMonitorClinet {
             serverPort = txt_serverPort.getText();
             saveLocalProperty();
             baseUrl = new StringBuilder("http://").append(serverIp).append(":").append(serverPort).toString();
+            baseWsUrl = new StringBuilder("ws://").append(serverIp).append(":").append(serverPort).toString();
+            webSocketServiceStart();
             StringBuilder urlPath = new StringBuilder(baseUrl);
             urlPath = urlPath.append(transferBean.getRootUrlPath()).
                     append(transferBean.getNetUrlEntityServerEndpoint());
@@ -572,6 +617,7 @@ public class NetMonitorClinet {
                 }
                 txt_monitorList.setText(monitorUrl.toString());
                 db_status.setText("已连接");
+                lb_urlNum.setText(urlMonitorEntities.size() + "个");
             } catch (Exception e1) {
                 e1.printStackTrace();
                 messageFrame(MessageBoxType.ERROR, "连接失败,请检查服务器ip或端口是否正确");
@@ -586,11 +632,13 @@ public class NetMonitorClinet {
                 messageFrame(MessageBoxType.ALERT, "请先连接服务器!");
                 return;
             }
+            failedUrlsForOneQuery = null;
             if (isUpdateReady) {
                 new Thread(() -> {
                     try {
                         updateAsyncTask();
-                        lb_updateState.setText("更新完成");
+                        alertFailedUrlsForOneQuery(failedUrlsForOneQuery);
+                        //lb_updateState.setText("更新完成");
                     } catch (Exception e1) {
                         e1.printStackTrace();
                         messageFrame(MessageBoxType.ERROR, "更新异常,请检查服务器状态是否正常");
@@ -604,6 +652,18 @@ public class NetMonitorClinet {
                 messageFrame(MessageBoxType.ALERT, "请勿重复点击！");
             }
 
+        });
+        //初始时不可点击
+        lb_alert.setEnabled(false);
+        lb_alert.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                StringBuilder builder = new StringBuilder();
+                for (UrlMonitorEntity entity : failedUrlsForOneQuery) {
+                    builder.append(entity.getName()).append("\n");
+                }
+                messageFrame(MessageBoxType.ALERT, "以下网址解析异常\n"+ builder.toString());
+            }
         });
         /*
             查询显示
@@ -720,6 +780,22 @@ public class NetMonitorClinet {
 
     }
 
+    private void webSocketServiceStart() {
+        log.info("开始连接WebSocket服务...");
+        try {
+            webSocketConfig.initFrameInstance(this);
+            webSocketConfig.getSocketClient();
+            //socketClient.send("我是张三啊，李四家有人在家吗？");//直接发送会报错。
+            // 因为webSocket连接是在子线程中。导致主线程调用时，连接还未成功。
+            String s = "sss";
+        } catch (Exception e1) {
+            log.error("websocket连接异常{}",e1.toString());
+            messageFrame(MessageBoxType.ERROR, "websocket连接异常");
+        }
+    }
+
+
+
     public void showFrame() {
         initComponents();
         loadLocalProperty();
@@ -751,9 +827,13 @@ public class NetMonitorClinet {
     private JPanel panel1;
     private JLabel label1;
     private JPanel subpanel3;
+    private JPanel panel5;
     private JLabel monitorList;
+    private JLabel lb_urlNum;
     private JButton btn_update;
+    private JPanel panel6;
     private JLabel lb_updateState;
+    private JLabel lb_alert;
     private JPanel panel4;
     private JScrollPane scrollPane1;
     private JTextArea txt_monitorList;

@@ -82,18 +82,38 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
 				name: "subpanel3"
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "monitorList"
-					"text": "已监控网站:"
-					"horizontalAlignment": 4
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 2
+				} ) {
+					name: "panel5"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "monitorList"
+						"text": "已监控网站:"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_urlNum"
+						"text": "0个"
+					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btn_update"
 					"text": "更新"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "lb_updateState"
-					"preferredSize": new java.awt.Dimension( 150, 30 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 0
+				} ) {
+					name: "panel6"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_updateState"
+						"preferredSize": new java.awt.Dimension( 63, 17 )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_alert"
+						"icon": new com.jformdesigner.model.SwingIcon( 2, "Table.descendingSortIcon" )
+						"maximumSize": new java.awt.Dimension( 16, 16 )
+						"minimumSize": new java.awt.Dimension( 16, 16 )
+					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 				"gridY": 7
