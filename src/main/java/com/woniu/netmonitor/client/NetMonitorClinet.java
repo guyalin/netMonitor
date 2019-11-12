@@ -784,10 +784,7 @@ public class NetMonitorClinet {
         log.info("开始连接WebSocket服务...");
         try {
             webSocketConfig.initFrameInstance(this);
-            webSocketConfig.getSocketClient();
-            //socketClient.send("我是张三啊，李四家有人在家吗？");//直接发送会报错。
-            // 因为webSocket连接是在子线程中。导致主线程调用时，连接还未成功。
-            String s = "sss";
+            webSocketConfig.getSocketClient(baseUrl);
         } catch (Exception e1) {
             log.error("websocket连接异常{}",e1.toString());
             messageFrame(MessageBoxType.ERROR, "websocket连接异常");

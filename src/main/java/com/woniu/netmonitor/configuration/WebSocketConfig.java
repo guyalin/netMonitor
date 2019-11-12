@@ -26,16 +26,16 @@ public class WebSocketConfig {
     private String netWebSocketEndPoint;
     @Value("${net.server.endpoint.rootpath}")
     private String serverRootPath;
-    @Value("${net.server.ipandport}")
-    private String remoteServerIpAndPort;
+    /*@Value("${net.server.ipandport}")
+    private String remoteServerIpAndPort;*/
 
     private WebSocketClient socketClient;
 
     private NetMonitorClinet monitorClient;
 
-    public WebSocketClient getSocketClient() {
+    public WebSocketClient getSocketClient(String remoteServerIpAndPort) {
         if (socketClient == null) {
-            setWebSocketClient();
+            setWebSocketClient(remoteServerIpAndPort);
         } else
             log.info("当前已存在webSocket实例");
         return socketClient;
@@ -45,7 +45,7 @@ public class WebSocketConfig {
         this.monitorClient = monitorClient;
     }
 
-    private void setWebSocketClient() {
+    private void setWebSocketClient(String remoteServerIpAndPort) {
         try {
             String webSocketServerIpAndPort = remoteServerIpAndPort.replace("http", "ws");
             StringBuilder path = new StringBuilder(webSocketServerIpAndPort);
