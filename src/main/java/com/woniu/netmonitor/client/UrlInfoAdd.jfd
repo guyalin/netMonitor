@@ -1,0 +1,423 @@
+JFDML JFormDesigner: "6.0.6.4.204" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+			"$columnSpecs": "default:grow"
+			"$rowSpecs": "fill:default:grow, linegap, fill:default:grow, linegap, default"
+		} ) {
+			name: "URLAddFrame"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 3
+				"hgap": 3
+				"vgap": 1
+			} ) {
+				name: "panel1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+					"rows": 16
+				} ) {
+					name: "panel2"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_subTitle"
+						"text": "网址信息"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "地区"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_area"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label9"
+						"text": "网址名"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlName"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label10"
+						"text": "网址目标url"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_connectUrl"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label11"
+						"text": "是否激活"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "textField4"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer3"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer5"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer6"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer4"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer7"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer8"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer9"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer10"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer11"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer12"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer13"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer14"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer15"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer24"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer25"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer26"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer27"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer28"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer30"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer31"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer32"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer33"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+					"rows": 16
+				} ) {
+					name: "panel3"
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "chb_ifChildFilter"
+						"text": "子网页过滤"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label15"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label16"
+						"text": "childFilterId"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_childFilterId"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label17"
+						"text": "rootTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_pageRootTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label18"
+						"text": "recordTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_recordTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label19"
+						"text": "urlTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label20"
+						"text": "urlTagIndex"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlTagIndex"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label21"
+						"text": "urlLocation"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlLocation"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label22"
+						"text": "urlAttrName"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlAttrName"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label23"
+						"text": "nameTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_nameTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label24"
+						"text": "nameTagIndex"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_nameTagIndex"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label25"
+						"text": "nameLocation"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_nameLocation"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label26"
+						"text": "nameAttrName"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_nameAttrName"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer16"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer17"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer18"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer19"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer20"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer21"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer22"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer23"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+					"rows": 16
+				} ) {
+					name: "panel4"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label36"
+						"text": "列表记录过滤"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer29"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label37"
+						"text": "filterId"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_recordFilterId"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label38"
+						"text": "ifActiveAsync"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_ifActiveAsync"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label39"
+						"text": "ifExcludeCdata"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_ifExcludeCdata"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label40"
+						"text": "rootTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_recordRootTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label41"
+						"text": "recordBodyTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_recordBodyTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label42"
+						"text": "titleTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_titleTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label43"
+						"text": "titleTagIndex"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_titleTagIndex"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label44"
+						"text": "isOwnerText"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_isOwnerText"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label45"
+						"text": "isAttr"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_isAttr"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label46"
+						"text": "attrName"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_attrName"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label47"
+						"text": "dateTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_dateTag"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label48"
+						"text": "dateTagIndex"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_dateTagIndex"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label49"
+						"text": "dateTagLocation"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_dateTagLocation"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label50"
+						"text": "dateFilterStr"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_dateFilterStr"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label51"
+						"text": "urlTag"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_urlRecordTag"
+					} )
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+				name: "panel5"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_test"
+					"text": "测试"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPane1"
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "txta_test"
+						"rows": 5
+					} )
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridY": 3
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel6"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_save"
+					"text": "保存并激活"
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 5
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 615, 630 )
+		} )
+	}
+}
