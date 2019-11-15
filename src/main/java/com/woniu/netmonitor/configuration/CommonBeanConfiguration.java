@@ -2,6 +2,7 @@ package com.woniu.netmonitor.configuration;
 
 import com.woniu.netmonitor.util.HttpTransferBean;
 import com.woniu.netmonitor.util.LocalPropertyUtil;
+import com.woniu.netmonitor.util.ServerEndpointBean;
 import com.woniu.netmonitor.util.WebClientUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import javax.websocket.server.ServerEndpoint;
 import java.util.Properties;
 
 @Configuration
@@ -38,6 +40,14 @@ public class CommonBeanConfiguration {
                                              @Qualifier("restTemplate") RestTemplate restTemplate){
         HttpTransferBean httpTransferBean = new HttpTransferBean(rootUrlPath, netUrlEntityServerEndpoint, netArticleRecordServerEndPoint, netArticlePersistenceServerEndPoint, restTemplate);
         return httpTransferBean;
+    }
+
+    @Bean(name = "serverEndpointBean")
+    public ServerEndpointBean serverEndpointBean(@Value("${net.server.endpoint.rootpath}") String serverRootPathEndpoint,
+                                                 @Value("${net.server.endpoint.neturlsave}") String netUrlSaveEndpoint,
+                                                 @Value("${net.server.endpoint.neturltest}") String netUrlTestEndpoint){
+        ServerEndpointBean serverEndpointBean = new ServerEndpointBean(serverRootPathEndpoint, netUrlSaveEndpoint, netUrlTestEndpoint);
+        return serverEndpointBean;
     }
 
 }

@@ -97,11 +97,15 @@ new FormModel {
 					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_addUrl"
+					"text": "添加"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btn_update"
 					"text": "更新"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
-					"alignment": 0
+					"alignment": 2
 				} ) {
 					name: "panel6"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -126,7 +130,6 @@ new FormModel {
 					name: "scrollPane1"
 					add( new FormComponent( "javax.swing.JTextArea" ) {
 						name: "txt_monitorList"
-						"rows": 6
 					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {

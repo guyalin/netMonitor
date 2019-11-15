@@ -25,6 +25,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
@@ -91,6 +93,7 @@ public class NetMonitorClinet {
         panel5 = new JPanel();
         monitorList = new JLabel();
         lb_urlNum = new JLabel();
+        btn_addUrl = new JButton();
         btn_update = new JButton();
         panel6 = new JPanel();
         lb_updateState = new JLabel();
@@ -222,20 +225,24 @@ public class NetMonitorClinet {
                 }
                 subpanel3.add(panel5);
 
+                //---- btn_addUrl ----
+                btn_addUrl.setText("\u6dfb\u52a0");
+                subpanel3.add(btn_addUrl);
+
                 //---- btn_update ----
                 btn_update.setText("\u66f4\u65b0");
                 subpanel3.add(btn_update);
 
                 //======== panel6 ========
                 {
-                    panel6.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    panel6.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
                     //---- lb_updateState ----
                     lb_updateState.setPreferredSize(new Dimension(63, 17));
                     panel6.add(lb_updateState);
 
                     //---- lb_alert ----
-                    lb_alert.setIcon(null);
+                    lb_alert.setIcon(UIManager.getIcon("Table.descendingSortIcon"));
                     lb_alert.setMaximumSize(new Dimension(16, 16));
                     lb_alert.setMinimumSize(new Dimension(16, 16));
                     panel6.add(lb_alert);
@@ -250,9 +257,6 @@ public class NetMonitorClinet {
 
                 //======== scrollPane1 ========
                 {
-
-                    //---- txt_monitorList ----
-                    txt_monitorList.setRows(6);
                     scrollPane1.setViewportView(txt_monitorList);
                 }
                 panel4.add(scrollPane1);
@@ -606,7 +610,7 @@ public class NetMonitorClinet {
             StringBuilder urlPath = new StringBuilder(baseUrl);
             urlPath = urlPath.append(transferBean.getRootUrlPath()).
                     append(transferBean.getNetUrlEntityServerEndpoint());
-            JSONObject responseEntity = null;
+            JSONObject responseEntity;
             try {
                 responseEntity = transferBean.doGetRequestMapping(urlPath.toString());
                 JSONArray jsonArray = responseEntity.getJSONArray("data");
@@ -624,6 +628,16 @@ public class NetMonitorClinet {
                 return;
             }
         });
+
+        /**
+         * 添加url按钮事件
+         */
+        btn_addUrl.addActionListener(e -> {
+            UrlInfoAdd urlInfoAdd = new UrlInfoAdd(baseUrl);
+            urlInfoAdd.showFrame();
+        });
+
+
         /*
             手动触发更新
          */
@@ -654,6 +668,7 @@ public class NetMonitorClinet {
 
         });
         //初始时不可点击
+        lb_alert.setIcon(null);
         lb_alert.setEnabled(false);
         lb_alert.addMouseListener(new MouseAdapter() {
             @Override
@@ -780,6 +795,19 @@ public class NetMonitorClinet {
 
     }
 
+    private void addUrlComponent(){
+        JPanel panel = new JPanel(new FlowLayout());
+        JLabel lb_urlName = new JLabel();
+        JTextField textField = new JTextField();
+        JButton btn_active = new JButton("启动");
+
+    }
+
+    private void activeUrlComponent(){
+
+    }
+
+
     private void webSocketServiceStart() {
         log.info("开始连接WebSocket服务...");
         try {
@@ -827,6 +855,7 @@ public class NetMonitorClinet {
     private JPanel panel5;
     private JLabel monitorList;
     private JLabel lb_urlNum;
+    private JButton btn_addUrl;
     private JButton btn_update;
     private JPanel panel6;
     private JLabel lb_updateState;
