@@ -1,7 +1,10 @@
 package com.woniu.netmonitor.configuration;
 
 import com.woniu.netmonitor.client.NetMonitorClinet;
+import com.woniu.netmonitor.client.UrlInfoAdd;
+import com.woniu.netmonitor.dictionary.MessageBoxType;
 import com.woniu.netmonitor.entity.UrlMonitorEntity;
+import com.woniu.netmonitor.util.JFrameUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,6 +35,8 @@ public class WebSocketConfig {
     private WebSocketClient socketClient;
 
     private NetMonitorClinet monitorClient;
+
+    //private UrlInfoAdd urlInfoAdd;
 
     public WebSocketClient getSocketClient(String remoteServerIpAndPort) {
         if (socketClient == null) {
@@ -66,13 +71,20 @@ public class WebSocketConfig {
                 public void onMessage(String s) {
                     log.info("[websocket] 收到消息={}", s);
                     JSONObject jsonObject = JSONObject.fromObject(s);
+                    /**
+                     * 更新是异步操作，个别网址更新失败应当采用服务端推送的形式的告知客户端
+                     */
                     if (jsonObject.containsKey("failedUrls")) {
                         JSONArray jsonArray = jsonObject.getJSONArray("failedUrls");
                         List<UrlMonitorEntity> failedUrlEntities = JSONArray.toList(jsonArray, new UrlMonitorEntity(), new JsonConfig());
                         monitorClient.alertFailedUrlsForOneQuery(failedUrlEntities);
                     }
+                    /**
+                     * 暂时不用
+                     */
                     if (jsonObject.containsKey("messageStr")){
                         String msg = jsonObject.getString("messageStr");
+                        //JFrameUtil.messageFrame(MessageBoxType.ALERT, msg);
                         log.info("msg", msg);
                     }
                 }

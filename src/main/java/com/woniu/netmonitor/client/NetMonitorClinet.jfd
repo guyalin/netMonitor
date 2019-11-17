@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
 			"$columnSpecs": "default"
-			"$rowSpecs": "default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default"
+			"$rowSpecs": "default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default"
 		} ) {
 			name: "monitorFrame"
 			"title": "netMonitor"
@@ -44,8 +44,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label2"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label3"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_showList"
+					"text": "显示监听列表"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btn_conn"
@@ -82,19 +83,8 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
 				name: "subpanel3"
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
-					"alignment": 2
-				} ) {
-					name: "panel5"
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "monitorList"
-						"text": "已监控网站:"
-						"horizontalAlignment": 4
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_urlNum"
-						"text": "0个"
-					} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btn_addUrl"
@@ -121,20 +111,6 @@ new FormModel {
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 				"gridY": 7
-			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
-				"columns": 1
-			} ) {
-				name: "panel4"
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "scrollPane1"
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "txt_monitorList"
-					} )
-				} )
-			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridX": 1
-				"gridY": 9
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
 				name: "subpanel5"
@@ -164,7 +140,7 @@ new FormModel {
 					}
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 11
+				"gridY": 9
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
 				name: "subpanel6"
@@ -215,7 +191,7 @@ new FormModel {
 					"actionCommand": "query"
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 13
+				"gridY": 11
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "scrollPane2"
@@ -224,7 +200,7 @@ new FormModel {
 					"preferredSize": new java.awt.Dimension( 489, 300 )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 15
+				"gridY": 13
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
 				name: "panel2"
@@ -266,7 +242,7 @@ new FormModel {
 					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 17
+				"gridY": 15
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

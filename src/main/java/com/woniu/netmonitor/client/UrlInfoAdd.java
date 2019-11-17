@@ -7,6 +7,8 @@ package com.woniu.netmonitor.client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +17,12 @@ import javax.swing.*;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+import com.woniu.netmonitor.dictionary.MessageBoxType;
 import com.woniu.netmonitor.entity.ArticleRecord;
 import com.woniu.netmonitor.entity.ArticleRecordFilter;
 import com.woniu.netmonitor.entity.NetChildFilter;
 import com.woniu.netmonitor.entity.UrlMonitorEntity;
-import com.woniu.netmonitor.util.LocalPropertyUtil;
-import com.woniu.netmonitor.util.ServerEndpointBean;
-import com.woniu.netmonitor.util.SpringUtil;
-import com.woniu.netmonitor.util.WebClientUtil;
+import com.woniu.netmonitor.util.*;
 import com.woniu.netmonitor.vo.JsonResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,6 +32,8 @@ import net.sf.json.JsonConfig;
  * @author gyl
  */
 public class UrlInfoAdd {
+
+    private NetMonitorClinet parentComponent;
 
     private WebClientUtil webClientBean = (WebClientUtil) SpringUtil.getBean("webClientBean");
     private ServerEndpointBean serverEndpointBean = (ServerEndpointBean) SpringUtil.getBean("serverEndpointBean");
@@ -486,6 +488,27 @@ public class UrlInfoAdd {
          * 保存激活按钮事件
          */
         btn_save.addActionListener(e -> {
+            InetAddress addr = null; //获取本机ip
+            try {
+                addr = InetAddress.getLocalHost();
+                String hostName = addr.getHostName(); //获取本机计算机名称
+                String serverUrlSavePath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint()
+                        + serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
+                JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlSavePath, JSONObject.class, urlMonitorEntity);
+                String resultCode = responseEntity.getString("returnCode");
+                if (resultCode.equals("0")){
+                    //JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.INFO, responseEntity.getString("returnMsg"));
+                    int response = JFrameUtil.messageFrame(URLAddFrame, MessageBoxType.CONFIRM, responseEntity.getString("returnMsg"));
+                    if (response == 0) {
+                        closeFrame();
+                    }
+                }else {
+                    JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.ERROR, responseEntity.getString("returnMsg"));
+                }
+
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            }
 
         });
 
@@ -726,10 +749,17 @@ public class UrlInfoAdd {
     private JButton btn_save;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public void showFrame() {
-
+    public void showFrame(NetMonitorClinet parentComponent) {
+        this.parentComponent = parentComponent;
         loadLocalProperty();
         listenEventRegister();
         URLAddFrame.setVisible(true);
+        URLAddFrame.setDefaultCloseOperation(2);
     }
+
+    private void closeFrame(){
+        URLAddFrame.dispose();
+    }
+
+
 }

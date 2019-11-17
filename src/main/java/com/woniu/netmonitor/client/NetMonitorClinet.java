@@ -25,8 +25,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
@@ -69,6 +67,8 @@ public class NetMonitorClinet {
     private WebClientUtil webClientBean = (WebClientUtil) SpringUtil.getBean("webClientBean");
     private WebSocketConfig webSocketConfig = (WebSocketConfig) SpringUtil.getBean("webSocketConfig");
 
+    private MonitorList monitorList;
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         monitorFrame = new JFrame();
@@ -81,7 +81,7 @@ public class NetMonitorClinet {
         hSpacer2 = new JPanel(null);
         subpanel2 = new JPanel();
         label2 = new JLabel();
-        label3 = new JLabel();
+        btn_showList = new JButton();
         btn_conn = new JButton();
         panel3 = new JPanel();
         lb_status = new JLabel();
@@ -90,17 +90,12 @@ public class NetMonitorClinet {
         panel1 = new JPanel();
         label1 = new JLabel();
         subpanel3 = new JPanel();
-        panel5 = new JPanel();
-        monitorList = new JLabel();
-        lb_urlNum = new JLabel();
+        label3 = new JLabel();
         btn_addUrl = new JButton();
         btn_update = new JButton();
         panel6 = new JPanel();
         lb_updateState = new JLabel();
         lb_alert = new JLabel();
-        panel4 = new JPanel();
-        scrollPane1 = new JScrollPane();
-        txt_monitorList = new JTextArea();
         subpanel5 = new JPanel();
         lb_info1 = new JLabel();
         lb_lastDays = new JLabel();
@@ -136,7 +131,7 @@ public class NetMonitorClinet {
             Container monitorFrameContentPane = monitorFrame.getContentPane();
             monitorFrameContentPane.setLayout(new FormLayout(
                 "default",
-                "8*(default, $lgap), default"));
+                "7*(default, $lgap), default"));
 
             //======== subpanel1 ========
             {
@@ -172,7 +167,10 @@ public class NetMonitorClinet {
             {
                 subpanel2.setLayout(new GridLayout());
                 subpanel2.add(label2);
-                subpanel2.add(label3);
+
+                //---- btn_showList ----
+                btn_showList.setText("\u663e\u793a\u76d1\u542c\u5217\u8868");
+                subpanel2.add(btn_showList);
 
                 //---- btn_conn ----
                 btn_conn.setText("\u8fde\u63a5");
@@ -209,21 +207,7 @@ public class NetMonitorClinet {
             //======== subpanel3 ========
             {
                 subpanel3.setLayout(new GridLayout());
-
-                //======== panel5 ========
-                {
-                    panel5.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-                    //---- monitorList ----
-                    monitorList.setText("\u5df2\u76d1\u63a7\u7f51\u7ad9:");
-                    monitorList.setHorizontalAlignment(SwingConstants.RIGHT);
-                    panel5.add(monitorList);
-
-                    //---- lb_urlNum ----
-                    lb_urlNum.setText("0\u4e2a");
-                    panel5.add(lb_urlNum);
-                }
-                subpanel3.add(panel5);
+                subpanel3.add(label3);
 
                 //---- btn_addUrl ----
                 btn_addUrl.setText("\u6dfb\u52a0");
@@ -250,18 +234,6 @@ public class NetMonitorClinet {
                 subpanel3.add(panel6);
             }
             monitorFrameContentPane.add(subpanel3, CC.xy(1, 7));
-
-            //======== panel4 ========
-            {
-                panel4.setLayout(new GridLayout(1, 1));
-
-                //======== scrollPane1 ========
-                {
-                    scrollPane1.setViewportView(txt_monitorList);
-                }
-                panel4.add(scrollPane1);
-            }
-            monitorFrameContentPane.add(panel4, CC.xy(1, 9));
 
             //======== subpanel5 ========
             {
@@ -291,7 +263,7 @@ public class NetMonitorClinet {
                 }));
                 subpanel5.add(cb_desc);
             }
-            monitorFrameContentPane.add(subpanel5, CC.xy(1, 11));
+            monitorFrameContentPane.add(subpanel5, CC.xy(1, 9));
 
             //======== subpanel6 ========
             {
@@ -344,7 +316,7 @@ public class NetMonitorClinet {
                 btn_query.setActionCommand("query");
                 subpanel6.add(btn_query);
             }
-            monitorFrameContentPane.add(subpanel6, CC.xy(1, 13));
+            monitorFrameContentPane.add(subpanel6, CC.xy(1, 11));
 
             //======== scrollPane2 ========
             {
@@ -353,7 +325,7 @@ public class NetMonitorClinet {
                 txt_cotent.setPreferredSize(new Dimension(489, 300));
                 scrollPane2.setViewportView(txt_cotent);
             }
-            monitorFrameContentPane.add(scrollPane2, CC.xy(1, 15));
+            monitorFrameContentPane.add(scrollPane2, CC.xy(1, 13));
 
             //======== panel2 ========
             {
@@ -399,7 +371,7 @@ public class NetMonitorClinet {
                 }
                 panel2.add(panel_download);
             }
-            monitorFrameContentPane.add(panel2, CC.xy(1, 17));
+            monitorFrameContentPane.add(panel2, CC.xy(1, 15));
             monitorFrame.pack();
             monitorFrame.setLocationRelativeTo(monitorFrame.getOwner());
         }
@@ -496,7 +468,7 @@ public class NetMonitorClinet {
             return netInfoQueryParamVo;
         } catch (Exception e) {
             log.error("参数解析出错！请检查.", e);
-            messageFrame(MessageBoxType.ERROR, "请检查输入参数");
+            JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "请检查输入参数");
             return null;
         }
 
@@ -527,12 +499,12 @@ public class NetMonitorClinet {
         fileWriterBean.saveToFile(articleRecords);
     }
 
-    public void alertFailedUrlsForOneQuery(List<UrlMonitorEntity> urlMonitorEntities){
-        if (urlMonitorEntities!=null && urlMonitorEntities.size() > 0){
+    public void alertFailedUrlsForOneQuery(List<UrlMonitorEntity> urlMonitorEntities) {
+        if (urlMonitorEntities != null && urlMonitorEntities.size() > 0) {
             lb_alert.setEnabled(true);
             failedUrlsForOneQuery = urlMonitorEntities;
             lb_alert.setIcon(UIManager.getIcon("Table.descendingSortIcon"));
-        } else{
+        } else {
             lb_alert.setIcon(null);
             lb_alert.setEnabled(false); //没有失败的网址，则取消标签的点击事件。
         }
@@ -557,28 +529,9 @@ public class NetMonitorClinet {
             res = "更新失败";
             lb_updateState.setText("更新失败");
         }
-        messageFrame(MessageBoxType.INFO, res);
+        JFrameUtil.messageFrame(monitorFrame, MessageBoxType.INFO, res);
     }
 
-    private int messageFrame(MessageBoxType boxType, String message) {
-        switch (boxType) {
-            case ALERT:
-                JOptionPane.showMessageDialog(monitorFrame, message, "警告", JOptionPane.WARNING_MESSAGE);
-                break;
-            case INFO:
-                JOptionPane.showMessageDialog(monitorFrame, message, "提示", JOptionPane.INFORMATION_MESSAGE);
-                break;
-            case ERROR:
-                JOptionPane.showMessageDialog(monitorFrame, message, "错误", JOptionPane.ERROR_MESSAGE);
-                break;
-            case CONFIRM:
-                return JOptionPane.showConfirmDialog(monitorFrame, message, "错误", JOptionPane.YES_NO_OPTION);
-            default:
-                JOptionPane.showMessageDialog(monitorFrame, message, "提示", JOptionPane.INFORMATION_MESSAGE);
-                break;
-        }
-        return 0;
-    }
 
     /**
      * 打开文件选择器
@@ -619,22 +572,36 @@ public class NetMonitorClinet {
                 for (UrlMonitorEntity entity : urlMonitorEntities) {
                     monitorUrl.append("    ").append(entity.getName()).append(":\t").append(entity.getConnectUrl()).append("\n");
                 }
-                txt_monitorList.setText(monitorUrl.toString());
+                monitorList = new MonitorList();
+                monitorList.setUrlList(monitorUrl.toString(), urlMonitorEntities.size());
                 db_status.setText("已连接");
-                lb_urlNum.setText(urlMonitorEntities.size() + "个");
             } catch (Exception e1) {
                 e1.printStackTrace();
-                messageFrame(MessageBoxType.ERROR, "连接失败,请检查服务器ip或端口是否正确");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "连接失败,请检查服务器ip或端口是否正确");
                 return;
             }
+        });
+
+        /**
+         * 展示列表
+         */
+        btn_showList.addActionListener(e -> {
+            if (monitorList == null) {
+                return;
+            }
+            monitorList.showFrame();
         });
 
         /**
          * 添加url按钮事件
          */
         btn_addUrl.addActionListener(e -> {
+            if (!db_status.getText().equals("已连接")) {
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "请先连接服务器!");
+                return;
+            }
             UrlInfoAdd urlInfoAdd = new UrlInfoAdd(baseUrl);
-            urlInfoAdd.showFrame();
+            urlInfoAdd.showFrame(this);
         });
 
 
@@ -643,7 +610,7 @@ public class NetMonitorClinet {
          */
         btn_update.addActionListener(e -> {
             if (!db_status.getText().equals("已连接")) {
-                messageFrame(MessageBoxType.ALERT, "请先连接服务器!");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "请先连接服务器!");
                 return;
             }
             failedUrlsForOneQuery = null;
@@ -655,7 +622,7 @@ public class NetMonitorClinet {
                         //lb_updateState.setText("更新完成");
                     } catch (Exception e1) {
                         e1.printStackTrace();
-                        messageFrame(MessageBoxType.ERROR, "更新异常,请检查服务器状态是否正常");
+                        JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "更新异常,请检查服务器状态是否正常");
                         lb_updateState.setText("更新失败");
                         isUpdateReady = true;
                         return;
@@ -663,7 +630,7 @@ public class NetMonitorClinet {
                     isUpdateReady = true;
                 }).start();
             } else {
-                messageFrame(MessageBoxType.ALERT, "请勿重复点击！");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "请勿重复点击！");
             }
 
         });
@@ -677,7 +644,7 @@ public class NetMonitorClinet {
                 for (UrlMonitorEntity entity : failedUrlsForOneQuery) {
                     builder.append(entity.getName()).append("\n");
                 }
-                messageFrame(MessageBoxType.ALERT, "以下网址解析异常\n"+ builder.toString());
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "以下网址解析异常\n" + builder.toString());
             }
         });
         /*
@@ -685,7 +652,7 @@ public class NetMonitorClinet {
          */
         btn_query.addActionListener(e -> {
             if (!db_status.getText().equals("已连接")) {
-                messageFrame(MessageBoxType.ALERT, "请先连接服务器!");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "请先连接服务器!");
                 return;
             }
             saveLocalProperty();//保存参数
@@ -701,7 +668,7 @@ public class NetMonitorClinet {
                 responseEntity = transferBean.doPostRequestMapping(urlPath.toString(), infoQueryParamVo);
             } catch (Exception e1) {
                 e1.printStackTrace();
-                messageFrame(MessageBoxType.ERROR, "查询失败,请检查服务器状态是否正常");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "查询失败,请检查服务器状态是否正常");
                 return;
             }
             JSONArray jsonArray = responseEntity.getJSONArray("data");
@@ -746,25 +713,25 @@ public class NetMonitorClinet {
             String downloadPath = txt_path.getText();
             String fileName = txt_fileName.getText();
             if (StringUtils.isEmpty(downloadPath) || StringUtils.isEmpty(fileName)) {
-                messageFrame(MessageBoxType.ALERT, "下载路径或者文件名不能为空！");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "下载路径或者文件名不能为空！");
                 return;
             }
             if (articleRecordsForOneQuery == null || articleRecordsForOneQuery.size() == 0) {
-                messageFrame(MessageBoxType.INFO, "未查询内容或查询的内容为空");
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.INFO, "未查询内容或查询的内容为空");
                 return;
             }
             try {
                 downloadToLocal(downloadPath, fileName, articleRecordsForOneQuery);
-                int response = messageFrame(MessageBoxType.CONFIRM, "下载完成，是否打开文件位置？");
+                int response = JFrameUtil.messageFrame(monitorFrame, MessageBoxType.CONFIRM, "下载完成，是否打开文件位置？");
                 if (response == 0) {
                     java.awt.Desktop.getDesktop().open(new java.io.File(downloadPath));
                 }
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
-                messageFrame(MessageBoxType.ERROR, "下载至本地时出错\n错误内容:" + e1.toString());
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "下载至本地时出错\n错误内容:" + e1.toString());
             } catch (IOException e1) {
                 e1.printStackTrace();
-                messageFrame(MessageBoxType.ERROR, "打开路径失败:" + e1.toString());
+                JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "打开路径失败:" + e1.toString());
             }
 
         });
@@ -788,14 +755,14 @@ public class NetMonitorClinet {
                     Runtime.getRuntime().exec(command);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    messageFrame(MessageBoxType.ERROR, "打开链接失败");
+                    JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "打开链接失败");
                 }
             }
         });
 
     }
 
-    private void addUrlComponent(){
+    private void addUrlComponent() {
         JPanel panel = new JPanel(new FlowLayout());
         JLabel lb_urlName = new JLabel();
         JTextField textField = new JTextField();
@@ -803,7 +770,7 @@ public class NetMonitorClinet {
 
     }
 
-    private void activeUrlComponent(){
+    private void activeUrlComponent() {
 
     }
 
@@ -814,11 +781,10 @@ public class NetMonitorClinet {
             webSocketConfig.initFrameInstance(this);
             webSocketConfig.getSocketClient(baseUrl);
         } catch (Exception e1) {
-            log.error("websocket连接异常{}",e1.toString());
-            messageFrame(MessageBoxType.ERROR, "websocket连接异常");
+            log.error("websocket连接异常{}", e1.toString());
+            JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "websocket连接异常");
         }
     }
-
 
 
     public void showFrame() {
@@ -843,7 +809,7 @@ public class NetMonitorClinet {
     private JPanel hSpacer2;
     private JPanel subpanel2;
     private JLabel label2;
-    private JLabel label3;
+    private JButton btn_showList;
     private JButton btn_conn;
     private JPanel panel3;
     private JLabel lb_status;
@@ -852,17 +818,12 @@ public class NetMonitorClinet {
     private JPanel panel1;
     private JLabel label1;
     private JPanel subpanel3;
-    private JPanel panel5;
-    private JLabel monitorList;
-    private JLabel lb_urlNum;
+    private JLabel label3;
     private JButton btn_addUrl;
     private JButton btn_update;
     private JPanel panel6;
     private JLabel lb_updateState;
     private JLabel lb_alert;
-    private JPanel panel4;
-    private JScrollPane scrollPane1;
-    private JTextArea txt_monitorList;
     private JPanel subpanel5;
     private JLabel lb_info1;
     private JLabel lb_lastDays;
