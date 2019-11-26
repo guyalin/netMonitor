@@ -40,16 +40,18 @@ public class MonitorList {
 
         //======== urlListFrame ========
         {
+            urlListFrame.setMinimumSize(new Dimension(400, 400));
+            urlListFrame.setTitle("\u76d1\u63a7\u5217\u8868");
             Container urlListFrameContentPane = urlListFrame.getContentPane();
-            urlListFrameContentPane.setLayout(new GridLayout(3, 0));
+            urlListFrameContentPane.setLayout(new FlowLayout());
 
             //======== panel1 ========
             {
-                panel1.setLayout(new FlowLayout());
+                panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
 
                 //======== panel5 ========
                 {
-                    panel5.setLayout(new FlowLayout(FlowLayout.RIGHT));
+                    panel5.setLayout(new FlowLayout());
 
                     //---- monitorList ----
                     monitorList.setText("\u5df2\u76d1\u63a7\u7f51\u7ad9:");
@@ -59,22 +61,22 @@ public class MonitorList {
                     //---- lb_urlNum ----
                     lb_urlNum.setText("0\u4e2a");
                     panel5.add(lb_urlNum);
+
+                    //======== panel4 ========
+                    {
+                        panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
+
+                        //======== scrollPane1 ========
+                        {
+                            scrollPane1.setViewportView(txt_monitorList);
+                        }
+                        panel4.add(scrollPane1);
+                    }
+                    panel5.add(panel4);
                 }
                 panel1.add(panel5);
             }
             urlListFrameContentPane.add(panel1);
-
-            //======== panel4 ========
-            {
-                panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
-
-                //======== scrollPane1 ========
-                {
-                    scrollPane1.setViewportView(txt_monitorList);
-                }
-                panel4.add(scrollPane1);
-            }
-            urlListFrameContentPane.add(panel4);
             urlListFrame.pack();
             urlListFrame.setLocationRelativeTo(urlListFrame.getOwner());
         }

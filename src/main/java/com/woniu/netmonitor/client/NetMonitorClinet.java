@@ -79,6 +79,7 @@ public class NetMonitorClinet {
         server_port = new JLabel();
         txt_serverPort = new JTextField();
         hSpacer2 = new JPanel(null);
+        panel8 = new JPanel();
         subpanel2 = new JPanel();
         label2 = new JLabel();
         btn_showList = new JButton();
@@ -86,9 +87,9 @@ public class NetMonitorClinet {
         panel3 = new JPanel();
         lb_status = new JLabel();
         db_status = new JLabel();
-        label4 = new JLabel();
         panel1 = new JPanel();
         label1 = new JLabel();
+        panel7 = new JPanel();
         subpanel3 = new JPanel();
         label3 = new JLabel();
         btn_addUrl = new JButton();
@@ -102,6 +103,7 @@ public class NetMonitorClinet {
         txt_days = new JTextField();
         lb_desc = new JLabel();
         cb_desc = new JComboBox<>();
+        panel5 = new JPanel();
         subpanel6 = new JPanel();
         lb_info2 = new JLabel();
         lb_titleFilter = new JLabel();
@@ -115,6 +117,7 @@ public class NetMonitorClinet {
         btn_query = new JButton();
         scrollPane2 = new JScrollPane();
         txt_cotent = new JEditorPane();
+        panel4 = new JPanel();
         panel2 = new JPanel();
         ckb_download = new JCheckBox();
         panel_download = new JPanel();
@@ -131,7 +134,7 @@ public class NetMonitorClinet {
             Container monitorFrameContentPane = monitorFrame.getContentPane();
             monitorFrameContentPane.setLayout(new FormLayout(
                 "default",
-                "7*(default, $lgap), default"));
+                "9*(default, $lgap), default"));
 
             //======== subpanel1 ========
             {
@@ -163,36 +166,41 @@ public class NetMonitorClinet {
             }
             monitorFrameContentPane.add(subpanel1, CC.xy(1, 1));
 
-            //======== subpanel2 ========
+            //======== panel8 ========
             {
-                subpanel2.setLayout(new GridLayout());
-                subpanel2.add(label2);
+                panel8.setLayout(new FlowLayout());
 
-                //---- btn_showList ----
-                btn_showList.setText("\u663e\u793a\u76d1\u542c\u5217\u8868");
-                subpanel2.add(btn_showList);
-
-                //---- btn_conn ----
-                btn_conn.setText("\u8fde\u63a5");
-                subpanel2.add(btn_conn);
-
-                //======== panel3 ========
+                //======== subpanel2 ========
                 {
-                    panel3.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    subpanel2.setLayout(new GridLayout());
+                    subpanel2.add(label2);
 
-                    //---- lb_status ----
-                    lb_status.setText("\u72b6\u6001:");
-                    lb_status.setHorizontalAlignment(SwingConstants.CENTER);
-                    panel3.add(lb_status);
+                    //---- btn_showList ----
+                    btn_showList.setText("\u663e\u793a\u76d1\u542c\u5217\u8868");
+                    subpanel2.add(btn_showList);
 
-                    //---- db_status ----
-                    db_status.setText("\u672a\u8fde\u63a5");
-                    panel3.add(db_status);
+                    //---- btn_conn ----
+                    btn_conn.setText("\u8fde\u63a5");
+                    subpanel2.add(btn_conn);
+
+                    //======== panel3 ========
+                    {
+                        panel3.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+                        //---- lb_status ----
+                        lb_status.setText("\u72b6\u6001:");
+                        lb_status.setHorizontalAlignment(SwingConstants.CENTER);
+                        panel3.add(lb_status);
+
+                        //---- db_status ----
+                        db_status.setText("\u672a\u8fde\u63a5");
+                        panel3.add(db_status);
+                    }
+                    subpanel2.add(panel3);
                 }
-                subpanel2.add(panel3);
-                subpanel2.add(label4);
+                panel8.add(subpanel2);
             }
-            monitorFrameContentPane.add(subpanel2, CC.xy(1, 3));
+            monitorFrameContentPane.add(panel8, CC.xy(1, 5));
 
             //======== panel1 ========
             {
@@ -202,38 +210,44 @@ public class NetMonitorClinet {
                 label1.setText("=======================================================");
                 panel1.add(label1);
             }
-            monitorFrameContentPane.add(panel1, CC.xy(1, 5));
+            monitorFrameContentPane.add(panel1, CC.xy(1, 7));
 
-            //======== subpanel3 ========
+            //======== panel7 ========
             {
-                subpanel3.setLayout(new GridLayout());
-                subpanel3.add(label3);
+                panel7.setLayout(new FlowLayout());
 
-                //---- btn_addUrl ----
-                btn_addUrl.setText("\u6dfb\u52a0");
-                subpanel3.add(btn_addUrl);
-
-                //---- btn_update ----
-                btn_update.setText("\u66f4\u65b0");
-                subpanel3.add(btn_update);
-
-                //======== panel6 ========
+                //======== subpanel3 ========
                 {
-                    panel6.setLayout(new FlowLayout(FlowLayout.RIGHT));
+                    subpanel3.setLayout(new GridLayout());
+                    subpanel3.add(label3);
 
-                    //---- lb_updateState ----
-                    lb_updateState.setPreferredSize(new Dimension(63, 17));
-                    panel6.add(lb_updateState);
+                    //---- btn_addUrl ----
+                    btn_addUrl.setText("\u6dfb\u52a0");
+                    subpanel3.add(btn_addUrl);
 
-                    //---- lb_alert ----
-                    lb_alert.setIcon(UIManager.getIcon("Table.descendingSortIcon"));
-                    lb_alert.setMaximumSize(new Dimension(16, 16));
-                    lb_alert.setMinimumSize(new Dimension(16, 16));
-                    panel6.add(lb_alert);
+                    //---- btn_update ----
+                    btn_update.setText("\u66f4\u65b0");
+                    subpanel3.add(btn_update);
+
+                    //======== panel6 ========
+                    {
+                        panel6.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+                        //---- lb_updateState ----
+                        lb_updateState.setPreferredSize(new Dimension(63, 17));
+                        panel6.add(lb_updateState);
+
+                        //---- lb_alert ----
+                        lb_alert.setIcon(UIManager.getIcon("Table.descendingSortIcon"));
+                        lb_alert.setMaximumSize(new Dimension(16, 16));
+                        lb_alert.setMinimumSize(new Dimension(16, 16));
+                        panel6.add(lb_alert);
+                    }
+                    subpanel3.add(panel6);
                 }
-                subpanel3.add(panel6);
+                panel7.add(subpanel3);
             }
-            monitorFrameContentPane.add(subpanel3, CC.xy(1, 7));
+            monitorFrameContentPane.add(panel7, CC.xy(1, 9));
 
             //======== subpanel5 ========
             {
@@ -263,115 +277,128 @@ public class NetMonitorClinet {
                 }));
                 subpanel5.add(cb_desc);
             }
-            monitorFrameContentPane.add(subpanel5, CC.xy(1, 9));
+            monitorFrameContentPane.add(subpanel5, CC.xy(1, 11));
 
-            //======== subpanel6 ========
+            //======== panel5 ========
             {
-                subpanel6.setLayout(new BoxLayout(subpanel6, BoxLayout.X_AXIS));
+                panel5.setLayout(new FlowLayout());
 
-                //---- lb_info2 ----
-                lb_info2.setText("\u53ef\u9009\u53c2\u6570:");
-                lb_info2.setHorizontalAlignment(SwingConstants.RIGHT);
-                lb_info2.setPreferredSize(new Dimension(80, 30));
-                subpanel6.add(lb_info2);
-
-                //---- lb_titleFilter ----
-                lb_titleFilter.setText("<html><body>\u6807\u9898\u8fc7\u6ee4<br>(\u4ee5\u5206\u53f7\u5206\u9694):</body>");
-                lb_titleFilter.setHorizontalAlignment(SwingConstants.CENTER);
-                subpanel6.add(lb_titleFilter);
-
-                //---- txt_titleFilter ----
-                txt_titleFilter.setColumns(10);
-                txt_titleFilter.setPreferredSize(new Dimension(150, 30));
-                subpanel6.add(txt_titleFilter);
-
-                //---- lb_filterMeta ----
-                lb_filterMeta.setText("\u8fc7\u6ee4\u6761\u4ef6:");
-                subpanel6.add(lb_filterMeta);
-
-                //======== subpanel6_1 ========
+                //======== subpanel6 ========
                 {
-                    subpanel6_1.setLayout(new GridLayout(2, 0));
+                    subpanel6.setLayout(new BoxLayout(subpanel6, BoxLayout.X_AXIS));
 
-                    //---- ck_area ----
-                    ck_area.setText("\u5730\u533a:");
-                    subpanel6_1.add(ck_area);
+                    //---- lb_info2 ----
+                    lb_info2.setText("\u53ef\u9009\u53c2\u6570:");
+                    lb_info2.setHorizontalAlignment(SwingConstants.RIGHT);
+                    lb_info2.setPreferredSize(new Dimension(80, 30));
+                    subpanel6.add(lb_info2);
 
-                    //---- txt_areaFilter ----
-                    txt_areaFilter.setColumns(5);
-                    subpanel6_1.add(txt_areaFilter);
+                    //---- lb_titleFilter ----
+                    lb_titleFilter.setText("<html><body>\u6807\u9898\u8fc7\u6ee4<br>(\u4ee5\u5206\u53f7\u5206\u9694):</body>");
+                    lb_titleFilter.setHorizontalAlignment(SwingConstants.CENTER);
+                    subpanel6.add(lb_titleFilter);
 
-                    //---- ck_netName ----
-                    ck_netName.setText("\u7f51\u7ad9\u540d:");
-                    subpanel6_1.add(ck_netName);
+                    //---- txt_titleFilter ----
+                    txt_titleFilter.setColumns(10);
+                    txt_titleFilter.setPreferredSize(new Dimension(150, 30));
+                    subpanel6.add(txt_titleFilter);
 
-                    //---- txt_netName ----
-                    txt_netName.setColumns(5);
-                    subpanel6_1.add(txt_netName);
+                    //---- lb_filterMeta ----
+                    lb_filterMeta.setText("\u8fc7\u6ee4\u6761\u4ef6:");
+                    subpanel6.add(lb_filterMeta);
+
+                    //======== subpanel6_1 ========
+                    {
+                        subpanel6_1.setLayout(new GridLayout(2, 0));
+
+                        //---- ck_area ----
+                        ck_area.setText("\u5730\u533a:");
+                        subpanel6_1.add(ck_area);
+
+                        //---- txt_areaFilter ----
+                        txt_areaFilter.setColumns(5);
+                        subpanel6_1.add(txt_areaFilter);
+
+                        //---- ck_netName ----
+                        ck_netName.setText("\u7f51\u7ad9\u540d:");
+                        subpanel6_1.add(ck_netName);
+
+                        //---- txt_netName ----
+                        txt_netName.setColumns(5);
+                        subpanel6_1.add(txt_netName);
+                    }
+                    subpanel6.add(subpanel6_1);
+
+                    //---- btn_query ----
+                    btn_query.setText("\u67e5\u8be2");
+                    btn_query.setActionCommand("query");
+                    subpanel6.add(btn_query);
                 }
-                subpanel6.add(subpanel6_1);
-
-                //---- btn_query ----
-                btn_query.setText("\u67e5\u8be2");
-                btn_query.setActionCommand("query");
-                subpanel6.add(btn_query);
+                panel5.add(subpanel6);
             }
-            monitorFrameContentPane.add(subpanel6, CC.xy(1, 11));
+            monitorFrameContentPane.add(panel5, CC.xy(1, 13));
 
             //======== scrollPane2 ========
             {
+                scrollPane2.setPreferredSize(null);
 
                 //---- txt_cotent ----
-                txt_cotent.setPreferredSize(new Dimension(489, 300));
+                txt_cotent.setPreferredSize(new Dimension(0, 300));
                 scrollPane2.setViewportView(txt_cotent);
             }
-            monitorFrameContentPane.add(scrollPane2, CC.xy(1, 13));
+            monitorFrameContentPane.add(scrollPane2, CC.xy(1, 15));
 
-            //======== panel2 ========
+            //======== panel4 ========
             {
-                panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+                panel4.setLayout(new FlowLayout());
 
-                //---- ckb_download ----
-                ckb_download.setText("\u4e0b\u8f7d");
-                panel2.add(ckb_download);
-
-                //======== panel_download ========
+                //======== panel2 ========
                 {
-                    panel_download.setLayout(new BoxLayout(panel_download, BoxLayout.X_AXIS));
+                    panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
 
-                    //---- lb_path ----
-                    lb_path.setText("\u4e0b\u8f7d\u8def\u5f84:");
-                    panel_download.add(lb_path);
+                    //---- ckb_download ----
+                    ckb_download.setText("\u4e0b\u8f7d");
+                    panel2.add(ckb_download);
 
-                    //---- txt_path ----
-                    txt_path.setColumns(15);
-                    panel_download.add(txt_path);
+                    //======== panel_download ========
+                    {
+                        panel_download.setLayout(new BoxLayout(panel_download, BoxLayout.X_AXIS));
 
-                    //---- btn_chooseFile ----
-                    btn_chooseFile.setText("...");
-                    btn_chooseFile.setIconTextGap(1);
-                    btn_chooseFile.setMaximumSize(new Dimension(15, 30));
-                    btn_chooseFile.setMinimumSize(new Dimension(15, 30));
-                    btn_chooseFile.setPreferredSize(new Dimension(20, 30));
-                    panel_download.add(btn_chooseFile);
+                        //---- lb_path ----
+                        lb_path.setText("\u4e0b\u8f7d\u8def\u5f84:");
+                        panel_download.add(lb_path);
 
-                    //---- lb_fileName ----
-                    lb_fileName.setText("\u6587\u4ef6\u540d:");
-                    panel_download.add(lb_fileName);
+                        //---- txt_path ----
+                        txt_path.setColumns(15);
+                        panel_download.add(txt_path);
 
-                    //---- txt_fileName ----
-                    txt_fileName.setColumns(3);
-                    txt_fileName.setText("article.txt");
-                    panel_download.add(txt_fileName);
+                        //---- btn_chooseFile ----
+                        btn_chooseFile.setText("...");
+                        btn_chooseFile.setIconTextGap(1);
+                        btn_chooseFile.setMaximumSize(new Dimension(15, 30));
+                        btn_chooseFile.setMinimumSize(new Dimension(15, 30));
+                        btn_chooseFile.setPreferredSize(new Dimension(20, 30));
+                        panel_download.add(btn_chooseFile);
 
-                    //---- btn_download ----
-                    btn_download.setText("\u4e0b\u8f7d");
-                    btn_download.setActionCommand("download");
-                    panel_download.add(btn_download);
+                        //---- lb_fileName ----
+                        lb_fileName.setText("\u6587\u4ef6\u540d:");
+                        panel_download.add(lb_fileName);
+
+                        //---- txt_fileName ----
+                        txt_fileName.setColumns(3);
+                        txt_fileName.setText("article.txt");
+                        panel_download.add(txt_fileName);
+
+                        //---- btn_download ----
+                        btn_download.setText("\u4e0b\u8f7d");
+                        btn_download.setActionCommand("download");
+                        panel_download.add(btn_download);
+                    }
+                    panel2.add(panel_download);
                 }
-                panel2.add(panel_download);
+                panel4.add(panel2);
             }
-            monitorFrameContentPane.add(panel2, CC.xy(1, 15));
+            monitorFrameContentPane.add(panel4, CC.xy(1, 17));
             monitorFrame.pack();
             monitorFrame.setLocationRelativeTo(monitorFrame.getOwner());
         }
@@ -807,6 +834,7 @@ public class NetMonitorClinet {
     private JLabel server_port;
     private JTextField txt_serverPort;
     private JPanel hSpacer2;
+    private JPanel panel8;
     private JPanel subpanel2;
     private JLabel label2;
     private JButton btn_showList;
@@ -814,9 +842,9 @@ public class NetMonitorClinet {
     private JPanel panel3;
     private JLabel lb_status;
     private JLabel db_status;
-    private JLabel label4;
     private JPanel panel1;
     private JLabel label1;
+    private JPanel panel7;
     private JPanel subpanel3;
     private JLabel label3;
     private JButton btn_addUrl;
@@ -830,6 +858,7 @@ public class NetMonitorClinet {
     private JTextField txt_days;
     private JLabel lb_desc;
     private JComboBox<String> cb_desc;
+    private JPanel panel5;
     private JPanel subpanel6;
     private JLabel lb_info2;
     private JLabel lb_titleFilter;
@@ -843,6 +872,7 @@ public class NetMonitorClinet {
     private JButton btn_query;
     private JScrollPane scrollPane2;
     private JEditorPane txt_cotent;
+    private JPanel panel4;
     private JPanel panel2;
     private JCheckBox ckb_download;
     private JPanel panel_download;

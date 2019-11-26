@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
 			"$columnSpecs": "default"
-			"$rowSpecs": "default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default"
+			"$rowSpecs": "default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default, linegap, default"
 		} ) {
 			name: "monitorFrame"
 			"title": "netMonitor"
@@ -39,38 +39,39 @@ new FormModel {
 				"gridX": 1
 				"gridY": 1
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
-				name: "subpanel2"
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label2"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btn_showList"
-					"text": "显示监听列表"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btn_conn"
-					"text": "连接"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
-					"alignment": 0
-				} ) {
-					name: "panel3"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel8"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
+					name: "subpanel2"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_status"
-						"text": "状态:"
-						"horizontalAlignment": 0
+						name: "label2"
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "db_status"
-						"text": "未连接"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btn_showList"
+						"text": "显示监听列表"
 					} )
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label4"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btn_conn"
+						"text": "连接"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+						"alignment": 0
+					} ) {
+						name: "panel3"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lb_status"
+							"text": "状态:"
+							"horizontalAlignment": 0
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "db_status"
+							"text": "未连接"
+						} )
+					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 3
+				"gridX": 1
+				"gridY": 5
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
 				name: "panel1"
@@ -79,38 +80,42 @@ new FormModel {
 					"text": "======================================================="
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 5
+				"gridY": 7
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
-				name: "subpanel3"
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label3"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btn_addUrl"
-					"text": "添加"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btn_update"
-					"text": "更新"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
-					"alignment": 2
-				} ) {
-					name: "panel6"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel7"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
+					name: "subpanel3"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_updateState"
-						"preferredSize": new java.awt.Dimension( 63, 17 )
+						name: "label3"
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_alert"
-						"icon": new com.jformdesigner.model.SwingIcon( 2, "Table.descendingSortIcon" )
-						"maximumSize": new java.awt.Dimension( 16, 16 )
-						"minimumSize": new java.awt.Dimension( 16, 16 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btn_addUrl"
+						"text": "添加"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btn_update"
+						"text": "更新"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+						"alignment": 2
+					} ) {
+						name: "panel6"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lb_updateState"
+							"preferredSize": new java.awt.Dimension( 63, 17 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lb_alert"
+							"icon": new com.jformdesigner.model.SwingIcon( 2, "Table.descendingSortIcon" )
+							"maximumSize": new java.awt.Dimension( 16, 16 )
+							"minimumSize": new java.awt.Dimension( 16, 16 )
+						} )
 					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 7
+				"gridX": 1
+				"gridY": 9
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
 				name: "subpanel5"
@@ -140,113 +145,122 @@ new FormModel {
 					}
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 9
+				"gridY": 11
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
-				name: "subpanel6"
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "lb_info2"
-					"text": "可选参数:"
-					"horizontalAlignment": 4
-					"preferredSize": new java.awt.Dimension( 80, 30 )
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "lb_titleFilter"
-					"text": "<html><body>标题过滤<br>(以分号分隔):</body>"
-					"horizontalAlignment": 0
-				} )
-				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "txt_titleFilter"
-					"columns": 10
-					"preferredSize": new java.awt.Dimension( 150, 30 )
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "lb_filterMeta"
-					"text": "过滤条件:"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
-					"rows": 2
-				} ) {
-					name: "subpanel6_1"
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "ck_area"
-						"text": "地区:"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel5"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+					name: "subpanel6"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_info2"
+						"text": "可选参数:"
+						"horizontalAlignment": 4
+						"preferredSize": new java.awt.Dimension( 80, 30 )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_titleFilter"
+						"text": "<html><body>标题过滤<br>(以分号分隔):</body>"
+						"horizontalAlignment": 0
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "txt_areaFilter"
-						"columns": 5
+						name: "txt_titleFilter"
+						"columns": 10
+						"preferredSize": new java.awt.Dimension( 150, 30 )
 					} )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "ck_netName"
-						"text": "网站名:"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lb_filterMeta"
+						"text": "过滤条件:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "txt_netName"
-						"columns": 5
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+						"rows": 2
+					} ) {
+						name: "subpanel6_1"
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "ck_area"
+							"text": "地区:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txt_areaFilter"
+							"columns": 5
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "ck_netName"
+							"text": "网站名:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txt_netName"
+							"columns": 5
+						} )
 					} )
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btn_query"
-					"text": "查询"
-					"actionCommand": "query"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btn_query"
+						"text": "查询"
+						"actionCommand": "query"
+					} )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 11
+				"gridX": 1
+				"gridY": 13
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "scrollPane2"
+				"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				add( new FormComponent( "javax.swing.JEditorPane" ) {
 					name: "txt_cotent"
-					"preferredSize": new java.awt.Dimension( 489, 300 )
-				} )
-			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-				"gridY": 13
-			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
-				name: "panel2"
-				add( new FormComponent( "javax.swing.JCheckBox" ) {
-					name: "ckb_download"
-					"text": "下载"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
-					name: "panel_download"
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_path"
-						"text": "下载路径:"
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "txt_path"
-						"columns": 15
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "btn_chooseFile"
-						"text": "..."
-						"iconTextGap": 1
-						"maximumSize": new java.awt.Dimension( 15, 30 )
-						"minimumSize": new java.awt.Dimension( 15, 30 )
-						"preferredSize": new java.awt.Dimension( 20, 30 )
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "lb_fileName"
-						"text": "文件名:"
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "txt_fileName"
-						"columns": 3
-						"text": "article.txt"
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "btn_download"
-						"text": "下载"
-						"actionCommand": "download"
-					} )
+					"preferredSize": new java.awt.Dimension( 0, 300 )
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 				"gridY": 15
 			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel4"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+					name: "panel2"
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "ckb_download"
+						"text": "下载"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "panel_download"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lb_path"
+							"text": "下载路径:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txt_path"
+							"columns": 15
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btn_chooseFile"
+							"text": "..."
+							"iconTextGap": 1
+							"maximumSize": new java.awt.Dimension( 15, 30 )
+							"minimumSize": new java.awt.Dimension( 15, 30 )
+							"preferredSize": new java.awt.Dimension( 20, 30 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lb_fileName"
+							"text": "文件名:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txt_fileName"
+							"columns": 3
+							"text": "article.txt"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btn_download"
+							"text": "下载"
+							"actionCommand": "download"
+						} )
+					} )
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 17
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 520, 610 )
+			"size": new java.awt.Dimension( 520, 450 )
 		} )
 	}
 }
