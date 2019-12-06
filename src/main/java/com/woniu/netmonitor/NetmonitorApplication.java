@@ -1,5 +1,6 @@
 package com.woniu.netmonitor;
 
+import com.woniu.netmonitor.client.LoginForm;
 import com.woniu.netmonitor.client.NetMonitorClinet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,8 +16,9 @@ public class NetmonitorApplication {
         /**
          * 开启可视化界面
          */
-        NetMonitorClinet netMonitorClient = new NetMonitorClinet();
-        netMonitorClient.showFrame();
+        new LoginForm(); //开启登录页
+        /*NetMonitorClinet netMonitorClient = new NetMonitorClinet();
+        netMonitorClient.showFrame();*/
     }
 
 }

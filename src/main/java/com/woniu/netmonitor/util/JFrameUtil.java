@@ -25,4 +25,10 @@ public class JFrameUtil {
         }
         return 0;
     }
+
+
+    public static void LocalePropertyRegister(JComponent jComponent){
+
+    }
+
 }

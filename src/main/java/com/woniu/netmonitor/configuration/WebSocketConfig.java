@@ -5,6 +5,7 @@ import com.woniu.netmonitor.client.UrlInfoAdd;
 import com.woniu.netmonitor.dictionary.MessageBoxType;
 import com.woniu.netmonitor.entity.UrlMonitorEntity;
 import com.woniu.netmonitor.util.JFrameUtil;
+import com.woniu.netmonitor.util.WebClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -12,6 +13,7 @@ import net.sf.json.JsonConfig;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,9 @@ public class WebSocketConfig {
     private String serverRootPath;
     /*@Value("${net.server.ipandport}")
     private String remoteServerIpAndPort;*/
+
+    @Autowired
+    private WebClientUtil webClientBean;
 
     private WebSocketClient socketClient;
 
@@ -54,10 +59,11 @@ public class WebSocketConfig {
         try {
             String webSocketServerIpAndPort = remoteServerIpAndPort.replace("http", "ws");
             StringBuilder path = new StringBuilder(webSocketServerIpAndPort);
-            InetAddress addr = InetAddress.getLocalHost(); //获取本机ip
-            String hostName = addr.getHostName(); //获取本机计算机名称
+            //InetAddress addr = InetAddress.getLocalHost(); //获取本机ip
+            //String hostName = addr.getHostName(); //获取本机计算机名称
             //String hostName = "localPC"; //获取本机计算机名称
-            path = path.append(serverRootPath).append(netWebSocketEndPoint).append("/").append(hostName);
+            String authName = webClientBean.getAuthUserInfo().getUserId();
+            path = path.append(serverRootPath).append(netWebSocketEndPoint).append("/").append(authName);
             log.info("path:{}", path);
 
             URI uri = new URI(path.toString());
@@ -106,9 +112,14 @@ public class WebSocketConfig {
         } catch (URISyntaxException e) {
             e.printStackTrace();
             socketClient = null;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         }
+    }
+
+    public void disConnectServer(){
+        if (socketClient != null){
+            socketClient.close();
+        }
+
     }
 
 

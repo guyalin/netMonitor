@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import javax.websocket.server.ServerEndpoint;
 import java.util.Properties;
 
 @Configuration
@@ -43,10 +42,24 @@ public class CommonBeanConfiguration {
     }
 
     @Bean(name = "serverEndpointBean")
-    public ServerEndpointBean serverEndpointBean(@Value("${net.server.endpoint.rootpath}") String serverRootPathEndpoint,
+    public ServerEndpointBean serverEndpointBean(@Value("${net.server.endpoint.rootpath}") String rootUrlPath,
+                                                 @Value("${net.server.endpoint.rootpath}") String serverRootPathEndpoint,
                                                  @Value("${net.server.endpoint.neturlsave}") String netUrlSaveEndpoint,
-                                                 @Value("${net.server.endpoint.neturltest}") String netUrlTestEndpoint){
-        ServerEndpointBean serverEndpointBean = new ServerEndpointBean(serverRootPathEndpoint, netUrlSaveEndpoint, netUrlTestEndpoint);
+                                                 @Value("${net.server.endpoint.neturltest}") String netUrlTestEndpoint,
+                                                 @Value("${net.server.endpoint.login}") String netServerLoginEndPoint,
+                                                 @Value("${net.server.endpoint.urlentities}") String netUrlEntityServerEndpoint,
+                                                 @Value("${net.server.endpoint.articlerecords}") String netArticleRecordServerEndPoint,
+                                                 @Value("${net.server.endpoint.articlepersistence}") String netArticlePersistenceServerEndPoint
+                                                 ){
+        ServerEndpointBean serverEndpointBean = new ServerEndpointBean(
+                rootUrlPath,
+                serverRootPathEndpoint,
+                netUrlSaveEndpoint,
+                netUrlTestEndpoint,
+                netServerLoginEndPoint,
+                netUrlEntityServerEndpoint,
+                netArticleRecordServerEndPoint,
+                netArticlePersistenceServerEndPoint);
         return serverEndpointBean;
     }
 

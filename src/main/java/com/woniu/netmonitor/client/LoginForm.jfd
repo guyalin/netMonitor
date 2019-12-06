@@ -1,0 +1,86 @@
+JFDML JFormDesigner: "6.0.6.4.204" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+			"$columnSpecs": "221dlu"
+			"$rowSpecs": "fill:23dlu, linegap, default, linegap, 56dlu, linegap, 23dlu"
+		} ) {
+			name: "loginFrame"
+			"title": "LOGIN"
+			"foreground": sfield java.awt.Color gray
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lb_title"
+					"text": "政务信息追踪系统"
+					"preferredSize": new java.awt.Dimension( 150, 25 )
+					"font": new java.awt.Font( "Microsoft YaHei UI", 0, 15 )
+					"maximumSize": new java.awt.Dimension( 240, 20 )
+					"horizontalAlignment": 0
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 1
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 2
+				"rows": 2
+			} ) {
+				name: "panel2"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "用户名："
+					"horizontalAlignment": 4
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 0
+				} ) {
+					name: "panel4"
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_userName"
+						"horizontalAlignment": 2
+						"columns": 10
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "密码："
+					"horizontalAlignment": 4
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 0
+				} ) {
+					name: "panel5"
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "txt_pwd"
+						"columns": 10
+					} )
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 5
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"vgap": 2
+			} ) {
+				name: "panel3"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_setting"
+					"text": "设置"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_login"
+					"text": "登录"
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 7
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 10, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}
