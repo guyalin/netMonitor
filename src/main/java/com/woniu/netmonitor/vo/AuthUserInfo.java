@@ -15,6 +15,7 @@ public class AuthUserInfo {
     private String userName;
     private String token;
     private String lastLoginTime;
+    private List<NetLabelVo> netLabelVos;
     private List<String> privileges;
 
 }

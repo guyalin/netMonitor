@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import com.woniu.netmonitor.dictionary.MessageBoxType;
@@ -17,7 +19,7 @@ import com.woniu.netmonitor.util.*;
 import com.woniu.netmonitor.vo.AuthUserInfo;
 import com.woniu.netmonitor.vo.AuthUserVo;
 import com.woniu.netmonitor.vo.JsonResult;
-import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -245,9 +247,9 @@ public class LoginForm {
             return false;
         }
         if (jsonResult.getReturnCode().equals("200")) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject = JSONObject.fromObject(jsonResult.getData());
-            authUserInfo = (AuthUserInfo) JSONObject.toBean(jsonObject, AuthUserInfo.class);
+            //JSONObject jsonObject = new JSONObject();
+            authUserInfo = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()), AuthUserInfo.class);
+            //authUserInfo = (AuthUserInfo) JSONObject.toBean(jsonObject, AuthUserInfo.class);
             webClientBean.setAuthUserInfo(authUserInfo);
             return true;
         }

@@ -14,6 +14,7 @@ import com.woniu.netmonitor.entity.UrlMonitorEntity;
 import com.woniu.netmonitor.vo.AuthUserInfo;
 import com.woniu.netmonitor.vo.JsonResult;
 import com.woniu.netmonitor.vo.NetInfoQueryParamVo;
+import com.woniu.netmonitor.vo.NetLabelVo;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author gyl
@@ -75,6 +77,8 @@ public class NetMonitorClinet {
 
     private  String baseUrl;
     private AuthUserInfo authUserInfo;
+
+    private List<UrlMonitorEntity> urlMonitorFullEntities;
 
     public NetMonitorClinet(String baseUrl){
         this.baseUrl = baseUrl;
@@ -444,8 +448,14 @@ public class NetMonitorClinet {
             monitorFrame.setLocationRelativeTo(monitorFrame.getOwner());
         }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+
         lb_userName.setText(authUserInfo.getUserName());
         lb_lastTime.setText(authUserInfo.getLastLoginTime());
+        List<NetLabelVo> netLabelVos = authUserInfo.getNetLabelVos();
+        netLabelVos.forEach(netLabelVo -> {
+            cb_label.addItem(netLabelVo);
+        });
+        cb_label.setVisible(true);
     }
 
     private void loadLocalProperty() {
@@ -806,6 +816,10 @@ public class NetMonitorClinet {
             }
         });
 
+        /**
+         * 标签下拉框选择监听事件
+         */
+        //
     }
 
     /**
@@ -826,16 +840,13 @@ public class NetMonitorClinet {
             /**
              * 新增标签查询信息。标签显示要和总url列表联合
              */
-            List<UrlMonitorEntity> urlMonitorEntities = JSONArray.toList(jsonArray, new UrlMonitorEntity(), new JsonConfig());
-            StringBuilder monitorUrl = new StringBuilder();
-            for (UrlMonitorEntity entity : urlMonitorEntities) {
-                monitorUrl.append("    ").append(entity.getName()).append(":\t").append(entity.getConnectUrl()).append("\n");
-            }
             webSocketServiceStart();
             connectedFlag = true;
             db_status.setText("已连接");
-            monitorList = new MonitorList();
-            monitorList.setUrlList(monitorUrl.toString(), urlMonitorEntities.size());
+            List<UrlMonitorEntity> urlMonitorEntities = JSONArray.toList(jsonArray, new UrlMonitorEntity(), new JsonConfig());
+            urlMonitorFullEntities = urlMonitorEntities;
+
+            fillListeningNetTags(urlMonitorFullEntities, cb_label.getSelectedIndex());
 
         } catch (Exception e1) {
             //e1.printStackTrace();
@@ -847,6 +858,28 @@ public class NetMonitorClinet {
             }
             throw e1;
         }
+    }
+
+    private void fillListeningNetTags(List<UrlMonitorEntity> urlMonitorFullEntities, Integer index){
+        List<UrlMonitorEntity> urlMonitorEntities;
+        if (index == 0)
+            urlMonitorEntities = urlMonitorFullEntities;
+        else {
+            NetLabelVo netLabelVo = (NetLabelVo) cb_label.getItemAt(index);
+            if (StringUtils.isBlank(netLabelVo.getNetList()))
+                return;
+            List<String> netList = Arrays.asList(netLabelVo.getNetList().split(","));
+
+            urlMonitorEntities = urlMonitorFullEntities.stream().
+                    filter(e -> netList.contains(e.getUrlId())).collect(Collectors.toList());
+        }
+
+        StringBuilder monitorUrl = new StringBuilder();
+        for (UrlMonitorEntity entity : urlMonitorEntities) {
+            monitorUrl.append("    ").append(entity.getName()).append(":\t").append(entity.getConnectUrl()).append("\n");
+        }
+        monitorList = new MonitorList();
+        monitorList.setUrlList(monitorUrl.toString(), urlMonitorFullEntities.size());
     }
 
     private void webSocketServiceStart() {
@@ -893,7 +926,7 @@ public class NetMonitorClinet {
     private JPanel panel11;
     private JPanel panel10;
     private JLabel label2;
-    private JComboBox<String> cb_label;
+    private JComboBox<Object> cb_label;
     private JButton button1;
     private JPanel panel8;
     private JPanel subpanel2;
