@@ -1,0 +1,80 @@
+JFDML JFormDesigner: "6.0.6.4.204" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+			"$columnSpecs": "95dlu:grow"
+			"$rowSpecs": "fill:default, linegap, default, linegap, 26dlu"
+		} ) {
+			name: "NetLabelMng"
+			"title": "labelManager"
+			"iconImage": new com.jformdesigner.model.SwingIcon( 2, "FileView.hardDriveIcon" )
+			"minimumSize": new java.awt.Dimension( 400, 400 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel2"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "标签管理"
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+				name: "panel5"
+				add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+					name: "splitPane1"
+					"dividerLocation": 150
+					"minimumSize": new java.awt.Dimension( 157, 144 )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+						"$columnSpecs": "16dlu:grow"
+						"$rowSpecs": "66dlu:grow, linegap, default"
+					} ) {
+						name: "panel1"
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							add( new FormComponent( "javax.swing.JList" ) {
+								name: "JList_label"
+							} )
+						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button1"
+							"text": "+"
+						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+							"gridX": 1
+							"gridY": 3
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "left"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "JList_label_url"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "right"
+					} )
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 3
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "panel3"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_labelUpd"
+					"text": "修改"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btn_labelSave"
+					"text": "保存"
+				} )
+			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+				"gridX": 1
+				"gridY": 5
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 475, 405 )
+		} )
+	}
+}

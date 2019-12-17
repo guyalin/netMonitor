@@ -35,4 +35,10 @@ public class UrlMonitorEntity implements Serializable {
         this.connectUrl = connectUrl;
         this.targetUrlPattern = targetUrlPattern;
     }
+
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

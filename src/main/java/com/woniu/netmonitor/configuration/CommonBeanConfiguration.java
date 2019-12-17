@@ -49,7 +49,11 @@ public class CommonBeanConfiguration {
                                                  @Value("${net.server.endpoint.login}") String netServerLoginEndPoint,
                                                  @Value("${net.server.endpoint.urlentities}") String netUrlEntityServerEndpoint,
                                                  @Value("${net.server.endpoint.articlerecords}") String netArticleRecordServerEndPoint,
-                                                 @Value("${net.server.endpoint.articlepersistence}") String netArticlePersistenceServerEndPoint
+                                                 @Value("${net.server.endpoint.articlepersistence}") String netArticlePersistenceServerEndPoint,
+                                                 @Value("${net.server.endpoint.labeladd}") String netLabelAddOrUpdEndpoint,
+                                                 @Value("${net.server.endpoint.labelquery}") String netLabelQueryEndpoint,
+                                                 @Value("${net.server.endpoint.labeldel}") String netLabelDelEndpoint
+
                                                  ){
         ServerEndpointBean serverEndpointBean = new ServerEndpointBean(
                 rootUrlPath,
@@ -59,7 +63,10 @@ public class CommonBeanConfiguration {
                 netServerLoginEndPoint,
                 netUrlEntityServerEndpoint,
                 netArticleRecordServerEndPoint,
-                netArticlePersistenceServerEndPoint);
+                netArticlePersistenceServerEndPoint,
+                netLabelAddOrUpdEndpoint,
+                netLabelQueryEndpoint,
+                netLabelDelEndpoint);
         return serverEndpointBean;
     }
 

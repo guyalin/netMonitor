@@ -23,6 +23,7 @@ import com.woniu.netmonitor.entity.ArticleRecordFilter;
 import com.woniu.netmonitor.entity.NetChildFilter;
 import com.woniu.netmonitor.entity.UrlMonitorEntity;
 import com.woniu.netmonitor.util.*;
+import com.woniu.netmonitor.vo.AuthUserInfo;
 import com.woniu.netmonitor.vo.JsonResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -488,26 +489,20 @@ public class UrlInfoAdd {
          * 保存激活按钮事件
          */
         btn_save.addActionListener(e -> {
-            InetAddress addr = null; //获取本机ip
-            try {
-                addr = InetAddress.getLocalHost();
-                String hostName = addr.getHostName(); //获取本机计算机名称
-                String serverUrlSavePath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint()
-                        + serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
-                JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlSavePath, JSONObject.class, urlMonitorEntity);
-                String resultCode = responseEntity.getString("returnCode");
-                if (resultCode.equals("0")){
-                    //JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.INFO, responseEntity.getString("returnMsg"));
-                    int response = JFrameUtil.messageFrame(URLAddFrame, MessageBoxType.CONFIRM, responseEntity.getString("returnMsg"));
-                    if (response == 0) {
-                        closeFrame();
-                    }
-                }else {
-                    JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.ERROR, responseEntity.getString("returnMsg"));
+            AuthUserInfo authUserInfo = webClientBean.getAuthUserInfo();
+            String hostName = authUserInfo.getUserId();
+            String serverUrlSavePath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint()
+                    + serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
+            JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlSavePath, JSONObject.class, urlMonitorEntity);
+            String resultCode = responseEntity.getString("returnCode");
+            if (resultCode.equals("0")){
+                //JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.INFO, responseEntity.getString("returnMsg"));
+                int response = JFrameUtil.messageFrame(URLAddFrame, MessageBoxType.CONFIRM, responseEntity.getString("returnMsg"));
+                if (response == 0) {
+                    closeFrame();
                 }
-
-            } catch (UnknownHostException e1) {
-                e1.printStackTrace();
+            }else {
+                JFrameUtil.messageFrame(URLAddFrame,MessageBoxType.ERROR, responseEntity.getString("returnMsg"));
             }
 
         });

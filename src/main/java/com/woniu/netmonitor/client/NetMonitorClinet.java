@@ -4,6 +4,7 @@
 
 package com.woniu.netmonitor.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import com.woniu.netmonitor.configuration.WebSocketConfig;
@@ -16,9 +17,6 @@ import com.woniu.netmonitor.vo.JsonResult;
 import com.woniu.netmonitor.vo.NetInfoQueryParamVo;
 import com.woniu.netmonitor.vo.NetLabelVo;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 import org.apache.commons.lang.StringUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.springframework.scheduling.annotation.Async;
@@ -28,10 +26,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -59,6 +54,7 @@ public class NetMonitorClinet {
     private static Boolean ifDownload;
     private static String downloadPath;
     private static String downloadFileName;
+    private static Integer netLabelIndex;
 
     private static volatile Boolean isUpdateReady = true;
 
@@ -72,11 +68,14 @@ public class NetMonitorClinet {
     private WebSocketConfig webSocketConfig = (WebSocketConfig) SpringUtil.getBean("webSocketConfig");
 
     private MonitorList monitorList;
+    private NetLabelManager netLabelManager;
 
     private Boolean connectedFlag = false;
 
     private  String baseUrl;
     private AuthUserInfo authUserInfo;
+
+    private List<NetLabelVo> netLabelVos;
 
     private List<UrlMonitorEntity> urlMonitorFullEntities;
 
@@ -86,7 +85,7 @@ public class NetMonitorClinet {
 
     }
 
-    private void initComponents() {
+    private void initComponents() throws Exception {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         monitorFrame = new JFrame();
         subpanel1 = new JPanel();
@@ -98,8 +97,8 @@ public class NetMonitorClinet {
         panel11 = new JPanel();
         panel10 = new JPanel();
         label2 = new JLabel();
-        cb_label = new JComboBox<>();
-        button1 = new JButton();
+        cb_label = new JComboBox();
+        btn_labelManager = new JButton();
         panel8 = new JPanel();
         subpanel2 = new JPanel();
         label6 = new JLabel();
@@ -197,15 +196,12 @@ public class NetMonitorClinet {
                     panel10.add(label2);
 
                     //---- cb_label ----
-                    cb_label.setModel(new DefaultComboBoxModel<>(new String[] {
-                        "\u5168\u90e8"
-                    }));
                     cb_label.setMaximumRowCount(10);
                     panel10.add(cb_label);
 
-                    //---- button1 ----
-                    button1.setText("\u6807\u7b7e\u7ba1\u7406");
-                    panel10.add(button1);
+                    //---- btn_labelManager ----
+                    btn_labelManager.setText("\u6807\u7b7e\u7ba1\u7406");
+                    panel10.add(btn_labelManager);
                 }
                 panel11.add(panel10);
             }
@@ -451,7 +447,8 @@ public class NetMonitorClinet {
 
         lb_userName.setText(authUserInfo.getUserName());
         lb_lastTime.setText(authUserInfo.getLastLoginTime());
-        List<NetLabelVo> netLabelVos = authUserInfo.getNetLabelVos();
+        netLabelVos = authUserInfo.getNetLabelVos();
+        cb_label.addItem(new NetLabelVo("全部"));
         netLabelVos.forEach(netLabelVo -> {
             cb_label.addItem(netLabelVo);
         });
@@ -475,6 +472,10 @@ public class NetMonitorClinet {
         ifDownload = (new Boolean(localPropertyBean.getProperty("ckDownload"))).booleanValue();
         downloadPath = localPropertyBean.getProperty("downloadPath");
         downloadFileName = localPropertyBean.getProperty("downloadFileName");
+        netLabelIndex = ((StringUtils.isEmpty(localPropertyBean.getProperty("netLabelIndex")) ||
+                !localPropertyBean.getProperty("netLabelIndex").matches("[0-9]")) ?
+                0 : Integer.parseInt(localPropertyBean.getProperty("netLabelIndex")));
+
 
         txt_days.setText(lastDays.toString());
         cb_desc.setSelectedIndex(descOrder);
@@ -491,7 +492,7 @@ public class NetMonitorClinet {
         ckb_download.setSelected(ifDownload);
         txt_path.setText(downloadPath);
         txt_fileName.setText(downloadFileName);
-
+        cb_label.setSelectedIndex(netLabelIndex);
     }
 
     private void saveLocalProperty() {
@@ -508,6 +509,8 @@ public class NetMonitorClinet {
         stringMap.put("ckDownload", Boolean.toString(ckb_download.isSelected()));
         stringMap.put("downloadPath", txt_path.getText());
         stringMap.put("downloadFileName", txt_fileName.getText());
+
+        stringMap.put("netLabelIndex", String.valueOf(cb_label.getSelectedIndex()));
 
         localPropertyBean.saveProperty(stringMap);
     }
@@ -626,8 +629,8 @@ public class NetMonitorClinet {
     }
 
     public void listenEventRegister() {
-        /*
-            刷新连接
+        /**
+          *  刷新连接
          */
         btn_conn.addActionListener(e -> {
             try {
@@ -638,6 +641,19 @@ public class NetMonitorClinet {
             }
         });
 
+        //checkBox状态改变，同时改变下拉列表
+        cb_label.addItemListener(e -> {
+            fillListeningNetTags(urlMonitorFullEntities, cb_label.getSelectedIndex());
+        });
+
+        btn_labelManager.addActionListener(e -> {
+            if (netLabelManager == null){
+                netLabelManager = new NetLabelManager(netLabelVos, urlMonitorFullEntities);
+                netLabelManager.showFrame();
+            }
+            else
+                netLabelManager.showFrame();
+        });
         /**
          * 展示列表
          */
@@ -719,16 +735,15 @@ public class NetMonitorClinet {
             StringBuilder urlPath = new StringBuilder(baseUrl);
             urlPath = urlPath.append(transferBean.getRootUrlPath()).
                     append(transferBean.getNetArticleRecordServerEndPoint());
-            JSONObject responseEntity = null;
+            JsonResult jsonResult = null;
             try {
-                responseEntity = webClientBean.webClientPostMethodAsync(urlPath.toString(), JSONObject.class, infoQueryParamVo);
+                jsonResult = webClientBean.webClientPostMethodAsync(urlPath.toString(), JsonResult.class, infoQueryParamVo);
             } catch (Exception e1) {
                 e1.printStackTrace();
                 JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "查询失败,请检查服务器状态是否正常");
                 return;
             }
-            JSONArray jsonArray = responseEntity.getJSONArray("data");
-            List<ArticleRecord> articleRecords = JSONArray.toList(jsonArray, new ArticleRecord(), new JsonConfig());
+            List<ArticleRecord> articleRecords = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()),ArticleRecord.class);
             articleRecordsForOneQuery = articleRecords; //保存在全局变量中，需要下载时直接用
             StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
@@ -823,6 +838,23 @@ public class NetMonitorClinet {
     }
 
     /**
+     * 刷新标签下拉列表
+     */
+    public void refreshLabelCombox() throws Exception {
+        JsonResult jsonResult = webClientBean.webClientGetMethodAsync(
+                serverEndpointBean.getEndpointWithRootUrl(baseUrl,serverEndpointBean.getNetLabelQueryEndpoint()),
+                JsonResult.class);
+        netLabelVos = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()), NetLabelVo.class);
+
+        //服务器添加查询接口，根据用户信息。
+        //把主页面引用传递到标签管理页面。
+        //服务器增加标签添加或修改接口。
+        //服务器增加标签删除接口。
+        //
+        //增加redis缓存，用来存放所有
+    }
+
+    /**
      * 连接服务器
      */
     private void connectServerGetUrlList() throws Exception {
@@ -832,18 +864,17 @@ public class NetMonitorClinet {
         StringBuilder urlPath = new StringBuilder(baseUrl);
         urlPath = urlPath.append(serverEndpointBean.getRootUrlPath()).
                 append(serverEndpointBean.getNetUrlEntityServerEndpoint());
-        JSONObject responseEntity;
+        JsonResult jsonResult;
         try {
             //responseEntity = transferBean.doGetRequestMapping(urlPath.toString());
-            responseEntity = webClientBean.webClientGetMethodAsync(urlPath.toString(), JSONObject.class);
-            JSONArray jsonArray = responseEntity.getJSONArray("data");
+            jsonResult = webClientBean.webClientGetMethodAsync(urlPath.toString(), JsonResult.class);
             /**
              * 新增标签查询信息。标签显示要和总url列表联合
              */
             webSocketServiceStart();
             connectedFlag = true;
             db_status.setText("已连接");
-            List<UrlMonitorEntity> urlMonitorEntities = JSONArray.toList(jsonArray, new UrlMonitorEntity(), new JsonConfig());
+            List<UrlMonitorEntity> urlMonitorEntities = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()), UrlMonitorEntity.class);
             urlMonitorFullEntities = urlMonitorEntities;
 
             fillListeningNetTags(urlMonitorFullEntities, cb_label.getSelectedIndex());
@@ -879,8 +910,9 @@ public class NetMonitorClinet {
             monitorUrl.append("    ").append(entity.getName()).append(":\t").append(entity.getConnectUrl()).append("\n");
         }
         monitorList = new MonitorList();
-        monitorList.setUrlList(monitorUrl.toString(), urlMonitorFullEntities.size());
+        monitorList.setUrlList(monitorUrl.toString(), urlMonitorEntities.size());
     }
+
 
     private void webSocketServiceStart() {
         log.info("开始连接WebSocket服务...");
@@ -926,8 +958,8 @@ public class NetMonitorClinet {
     private JPanel panel11;
     private JPanel panel10;
     private JLabel label2;
-    private JComboBox<Object> cb_label;
-    private JButton button1;
+    private JComboBox cb_label;
+    private JButton btn_labelManager;
     private JPanel panel8;
     private JPanel subpanel2;
     private JLabel label6;

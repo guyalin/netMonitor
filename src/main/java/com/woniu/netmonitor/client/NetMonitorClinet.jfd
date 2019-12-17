@@ -44,14 +44,10 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "cb_label"
-						"model": new javax.swing.DefaultComboBoxModel {
-							selectedItem: "全部"
-							addElement( "全部" )
-						}
 						"maximumRowCount": 10
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button1"
+						name: "btn_labelManager"
 						"text": "标签管理"
 					} )
 				} )

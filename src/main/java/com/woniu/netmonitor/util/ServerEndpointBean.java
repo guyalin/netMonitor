@@ -15,4 +15,13 @@ public class ServerEndpointBean {
     private String netUrlEntityServerEndpoint;
     private String netArticleRecordServerEndPoint;
     private String netArticlePersistenceServerEndPoint;
+    private String netLabelAddOrUpdEndpoint;
+    private String netLabelQueryEndpoint;
+    private String netLabelDelEndpoint;
+
+    public String getEndpointWithRootUrl(String baseUrl, String endpoint){
+        StringBuilder sb = new StringBuilder();
+        sb.append(baseUrl).append(rootUrlPath).append(endpoint);
+        return sb.toString();
+    }
 }
