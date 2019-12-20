@@ -40,17 +40,14 @@ public class UrlInfoAdd {
     private ServerEndpointBean serverEndpointBean = (ServerEndpointBean) SpringUtil.getBean("serverEndpointBean");
     private LocalPropertyUtil localPropertyBean = (LocalPropertyUtil) SpringUtil.getBean("localPropertyBean");
 
-    private String serverBaseUrl;
-
     private UrlMonitorEntity urlMonitorEntity;
     private NetChildFilter netChildFilter;
     private ArticleRecordFilter articleRecordFilter;
 
     //private List<ArticleRecord> articleRecords = new ArrayList<>();
 
-    public UrlInfoAdd(String urlPath) {
+    public UrlInfoAdd() {
         initComponents();
-        this.serverBaseUrl = urlPath;
     }
 
     private void initComponents() {
@@ -466,10 +463,8 @@ public class UrlInfoAdd {
         btn_test.addActionListener(e -> {
             saveLocalProperty();
             initNetUrlVo();
-            //String serverUrlSavePath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint() + serverEndpointBean.getNetUrlSaveEndpoint();
-            String serverUrlTestPath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint() + serverEndpointBean.getNetUrlTestEndpoint();
             try {
-                JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlTestPath, JSONObject.class, urlMonitorEntity);
+                JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetUrlTestEndpoint(), JSONObject.class, urlMonitorEntity);
                 JSONArray jsonArray = responseEntity.getJSONArray("data");
                 List<ArticleRecord> articleRecords = JSONArray.toList(jsonArray, new ArticleRecord(), new JsonConfig());
                 StringBuilder testRecord = new StringBuilder();
@@ -491,8 +486,7 @@ public class UrlInfoAdd {
         btn_save.addActionListener(e -> {
             AuthUserInfo authUserInfo = webClientBean.getAuthUserInfo();
             String hostName = authUserInfo.getUserId();
-            String serverUrlSavePath = serverBaseUrl + serverEndpointBean.getServerRootPathEndpoint()
-                    + serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
+            String serverUrlSavePath = serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
             JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlSavePath, JSONObject.class, urlMonitorEntity);
             String resultCode = responseEntity.getString("returnCode");
             if (resultCode.equals("0")){

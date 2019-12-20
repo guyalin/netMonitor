@@ -21,8 +21,10 @@ public class CommonBeanConfiguration {
     }
 
     @Bean(name = "webClientBean")
-    public WebClientUtil webClient(){
-        return new WebClientUtil();
+    public WebClientUtil webClient(@Qualifier("serverEndpointBean") ServerEndpointBean serverEndpointBean){
+        WebClientUtil webClientUtil = new WebClientUtil();
+        webClientUtil.setServerRootPath(serverEndpointBean.getRootUrlPath());
+        return webClientUtil;
     }
 
     @Bean(name = "localPropertyBean")

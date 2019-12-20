@@ -93,6 +93,10 @@ public class MonitorList {
         urlListFrame.setVisible(true);
     }
 
+    public void closeFrame(){
+        urlListFrame.dispose();
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JFrame urlListFrame;
     private JPanel panel1;

@@ -18,12 +18,10 @@ import com.woniu.netmonitor.vo.NetInfoQueryParamVo;
 import com.woniu.netmonitor.vo.NetLabelVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.java_websocket.client.WebSocketClient;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.awt.event.*;
@@ -39,11 +37,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NetMonitorClinet {
 
-    /**
-     * 参数记录
-     */
-    private static String serverIp;
-    private static String serverPort;
     private static Integer lastDays;
     private static Integer descOrder;
     private static String titleContentFilter;
@@ -72,15 +65,14 @@ public class NetMonitorClinet {
 
     private Boolean connectedFlag = false;
 
-    private  String baseUrl;
+    //private  String baseUrl;
     private AuthUserInfo authUserInfo;
 
     private List<NetLabelVo> netLabelVos;
 
     private List<UrlMonitorEntity> urlMonitorFullEntities;
 
-    public NetMonitorClinet(String baseUrl){
-        this.baseUrl = baseUrl;
+    public NetMonitorClinet() {
         this.authUserInfo = webClientBean.getAuthUserInfo();
 
     }
@@ -153,8 +145,8 @@ public class NetMonitorClinet {
             monitorFrame.setTitle("netMonitor");
             Container monitorFrameContentPane = monitorFrame.getContentPane();
             monitorFrameContentPane.setLayout(new FormLayout(
-                "default",
-                "9*(default, $lgap), default"));
+                    "default",
+                    "9*(default, $lgap), default"));
 
             //======== subpanel1 ========
             {
@@ -312,9 +304,9 @@ public class NetMonitorClinet {
                 subpanel5.add(lb_desc);
 
                 //---- cb_desc ----
-                cb_desc.setModel(new DefaultComboBoxModel<>(new String[] {
-                    "\u65f6\u95f4 \u7f51\u7ad9",
-                    "\u7f51\u7ad9 \u65f6\u95f4"
+                cb_desc.setModel(new DefaultComboBoxModel<>(new String[]{
+                        "\u65f6\u95f4 \u7f51\u7ad9",
+                        "\u7f51\u7ad9 \u65f6\u95f4"
                 }));
                 subpanel5.add(cb_desc);
             }
@@ -447,17 +439,12 @@ public class NetMonitorClinet {
 
         lb_userName.setText(authUserInfo.getUserName());
         lb_lastTime.setText(authUserInfo.getLastLoginTime());
-        netLabelVos = authUserInfo.getNetLabelVos();
-        cb_label.addItem(new NetLabelVo("全部"));
-        netLabelVos.forEach(netLabelVo -> {
-            cb_label.addItem(netLabelVo);
-        });
+        //netLabelVos = authUserInfo.getNetLabelVos();
+        refreshLabelCombox();
         cb_label.setVisible(true);
     }
 
     private void loadLocalProperty() {
-        serverIp = localPropertyBean.getProperty("serverIp");
-        serverPort = localPropertyBean.getProperty("serverPort");
         lastDays = ((StringUtils.isEmpty(localPropertyBean.getProperty("lastDays")) ||
                 !localPropertyBean.getProperty("lastDays").matches("[0-9]*")) ?
                 30 : Integer.parseInt(localPropertyBean.getProperty("lastDays")));
@@ -475,7 +462,8 @@ public class NetMonitorClinet {
         netLabelIndex = ((StringUtils.isEmpty(localPropertyBean.getProperty("netLabelIndex")) ||
                 !localPropertyBean.getProperty("netLabelIndex").matches("[0-9]")) ?
                 0 : Integer.parseInt(localPropertyBean.getProperty("netLabelIndex")));
-
+        if (netLabelIndex >= cb_label.getItemCount())
+            netLabelIndex = 0;
 
         txt_days.setText(lastDays.toString());
         cb_desc.setSelectedIndex(descOrder);
@@ -595,10 +583,7 @@ public class NetMonitorClinet {
         long start = System.currentTimeMillis();
         lb_updateState.setVisible(true);
         lb_updateState.setText("更新中...");
-        StringBuilder urlPath = new StringBuilder(baseUrl);
-        urlPath = urlPath.append(transferBean.getRootUrlPath()).
-                append(transferBean.getNetArticlePersistenceServerEndPoint());
-        JsonResult jsonResult = webClientBean.webClientGetMethodAsync(urlPath.toString(), JsonResult.class);
+        JsonResult jsonResult = webClientBean.webClientGetMethodAsync(serverEndpointBean.getNetArticlePersistenceServerEndPoint(), JsonResult.class);
         long end = System.currentTimeMillis();
         String res;
         if (jsonResult.getReturnCode().equals("SUCC")) {
@@ -630,7 +615,7 @@ public class NetMonitorClinet {
 
     public void listenEventRegister() {
         /**
-          *  刷新连接
+         *  刷新连接
          */
         btn_conn.addActionListener(e -> {
             try {
@@ -646,13 +631,15 @@ public class NetMonitorClinet {
             fillListeningNetTags(urlMonitorFullEntities, cb_label.getSelectedIndex());
         });
 
+        /**
+         * 标签管理
+         */
         btn_labelManager.addActionListener(e -> {
-            if (netLabelManager == null){
-                netLabelManager = new NetLabelManager(netLabelVos, urlMonitorFullEntities);
-                netLabelManager.showFrame();
+            if (netLabelManager != null) {
+                netLabelManager.closeFrame();
             }
-            else
-                netLabelManager.showFrame();
+            netLabelManager = new NetLabelManager(netLabelVos, urlMonitorFullEntities, this);
+            netLabelManager.showFrame();
         });
         /**
          * 展示列表
@@ -672,7 +659,7 @@ public class NetMonitorClinet {
                 JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ALERT, "请先连接服务器!");
                 return;
             }
-            UrlInfoAdd urlInfoAdd = new UrlInfoAdd(baseUrl);
+            UrlInfoAdd urlInfoAdd = new UrlInfoAdd();
             urlInfoAdd.showFrame(this);
         });
 
@@ -732,18 +719,16 @@ public class NetMonitorClinet {
             if (infoQueryParamVo == null) {
                 return;
             }
-            StringBuilder urlPath = new StringBuilder(baseUrl);
-            urlPath = urlPath.append(transferBean.getRootUrlPath()).
-                    append(transferBean.getNetArticleRecordServerEndPoint());
             JsonResult jsonResult = null;
             try {
-                jsonResult = webClientBean.webClientPostMethodAsync(urlPath.toString(), JsonResult.class, infoQueryParamVo);
+                jsonResult = webClientBean.webClientPostMethodAsync(
+                        serverEndpointBean.getNetArticleRecordServerEndPoint(), JsonResult.class, infoQueryParamVo);
             } catch (Exception e1) {
                 e1.printStackTrace();
                 JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "查询失败,请检查服务器状态是否正常");
                 return;
             }
-            List<ArticleRecord> articleRecords = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()),ArticleRecord.class);
+            List<ArticleRecord> articleRecords = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()), ArticleRecord.class);
             articleRecordsForOneQuery = articleRecords; //保存在全局变量中，需要下载时直接用
             StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
@@ -840,18 +825,25 @@ public class NetMonitorClinet {
     /**
      * 刷新标签下拉列表
      */
-    public void refreshLabelCombox() throws Exception {
+    public void refreshLabelCombox() {
+        cb_label.removeAllItems();
+        cb_label.addItem(new NetLabelVo("全部"));
         JsonResult jsonResult = webClientBean.webClientGetMethodAsync(
-                serverEndpointBean.getEndpointWithRootUrl(baseUrl,serverEndpointBean.getNetLabelQueryEndpoint()),
+                serverEndpointBean.getNetLabelQueryEndpoint(),
                 JsonResult.class);
         netLabelVos = JSONObject.parseArray(JSONObject.toJSONString(jsonResult.getData()), NetLabelVo.class);
-
+        netLabelVos.forEach(netLabelVo -> {
+            cb_label.addItem(netLabelVo);
+        });
+        //更新标签管理页面的标签列表
+        if (netLabelManager != null){
+            netLabelManager.updateListLabel(netLabelVos);
+        }
         //服务器添加查询接口，根据用户信息。
         //把主页面引用传递到标签管理页面。
         //服务器增加标签添加或修改接口。
         //服务器增加标签删除接口。
-        //
-        //增加redis缓存，用来存放所有
+
     }
 
     /**
@@ -859,15 +851,10 @@ public class NetMonitorClinet {
      */
     private void connectServerGetUrlList() throws Exception {
         saveLocalProperty();
-        //baseUrl = new StringBuilder("http://").append(serverIp).append(":").append(serverPort).toString();
-
-        StringBuilder urlPath = new StringBuilder(baseUrl);
-        urlPath = urlPath.append(serverEndpointBean.getRootUrlPath()).
-                append(serverEndpointBean.getNetUrlEntityServerEndpoint());
         JsonResult jsonResult;
         try {
             //responseEntity = transferBean.doGetRequestMapping(urlPath.toString());
-            jsonResult = webClientBean.webClientGetMethodAsync(urlPath.toString(), JsonResult.class);
+            jsonResult = webClientBean.webClientGetMethodAsync(serverEndpointBean.getNetUrlEntityServerEndpoint(), JsonResult.class);
             /**
              * 新增标签查询信息。标签显示要和总url列表联合
              */
@@ -882,8 +869,8 @@ public class NetMonitorClinet {
         } catch (Exception e1) {
             //e1.printStackTrace();
             connectedFlag = false;
-            if (e1 instanceof HttpClientErrorException){
-                if (((HttpClientErrorException) e1).getRawStatusCode() == 403){
+            if (e1 instanceof HttpClientErrorException) {
+                if (((HttpClientErrorException) e1).getRawStatusCode() == 403) {
                     JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "用户校验失败");
                 }
             }
@@ -891,9 +878,9 @@ public class NetMonitorClinet {
         }
     }
 
-    private void fillListeningNetTags(List<UrlMonitorEntity> urlMonitorFullEntities, Integer index){
+    private void fillListeningNetTags(List<UrlMonitorEntity> urlMonitorFullEntities, Integer index) {
         List<UrlMonitorEntity> urlMonitorEntities;
-        if (index == 0)
+        if (index <= 0)
             urlMonitorEntities = urlMonitorFullEntities;
         else {
             NetLabelVo netLabelVo = (NetLabelVo) cb_label.getItemAt(index);
@@ -909,6 +896,8 @@ public class NetMonitorClinet {
         for (UrlMonitorEntity entity : urlMonitorEntities) {
             monitorUrl.append("    ").append(entity.getName()).append(":\t").append(entity.getConnectUrl()).append("\n");
         }
+        if (monitorList != null)
+            monitorList.closeFrame();
         monitorList = new MonitorList();
         monitorList.setUrlList(monitorUrl.toString(), urlMonitorEntities.size());
     }
@@ -918,13 +907,12 @@ public class NetMonitorClinet {
         log.info("开始连接WebSocket服务...");
         try {
             webSocketConfig.initFrameInstance(this);
-            webSocketConfig.getSocketClient(baseUrl);
+            webSocketConfig.getSocketClient(webClientBean.getBaseUrl());
         } catch (Exception e1) {
             log.error("websocket连接异常{}", e1.toString());
             JFrameUtil.messageFrame(monitorFrame, MessageBoxType.ERROR, "websocket连接异常");
         }
     }
-
 
 
     /**

@@ -210,7 +210,7 @@ public class LoginForm {
             try {
                 Boolean loginRes = connectServer(userVo);
                 if (loginRes) {
-                    NetMonitorClinet netMonitorClient = new NetMonitorClinet(baseUrl);
+                    NetMonitorClinet netMonitorClient = new NetMonitorClinet();
                     netMonitorClient.showFrame();
                     closeFrame();
                 }
@@ -232,11 +232,8 @@ public class LoginForm {
      */
     private Boolean connectServer(AuthUserVo userVo) throws Exception {
         baseUrl = new StringBuilder("http://").append(serverIp).append(":").append(serverPort).toString();
-
-        StringBuilder urlPath = new StringBuilder(baseUrl);
-        urlPath = urlPath.append(serverEndpointBean.getRootUrlPath()).
-                append(serverEndpointBean.getNetServerLoginEndPoint());
-        JsonResult jsonResult = webClientBean.webClientPostMethodAsync(urlPath.toString(), JsonResult.class, userVo);
+        webClientBean.setBaseUrl(baseUrl);
+        JsonResult jsonResult = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetServerLoginEndPoint(), JsonResult.class, userVo);
         if (jsonResult == null) {
             JFrameUtil.messageFrame(loginFrame, MessageBoxType.ERROR, "登录异常，无法连接服务器");
             return false;

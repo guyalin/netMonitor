@@ -26,7 +26,7 @@ new FormModel {
 					"minimumSize": new java.awt.Dimension( 157, 144 )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
 						"$columnSpecs": "16dlu:grow"
-						"$rowSpecs": "66dlu:grow, linegap, default"
+						"$rowSpecs": "64dlu:grow"
 					} ) {
 						name: "panel1"
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -35,13 +35,6 @@ new FormModel {
 								name: "JList_label"
 							} )
 						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button1"
-							"text": "+"
-						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-							"gridX": 1
-							"gridY": 3
-						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "left"
 					} )

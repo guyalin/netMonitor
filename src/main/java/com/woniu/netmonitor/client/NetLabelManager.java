@@ -7,24 +7,28 @@ package com.woniu.netmonitor.client;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import com.woniu.netmonitor.client.customComponent.SelectedList;
+import com.woniu.netmonitor.dictionary.MessageBoxType;
 import com.woniu.netmonitor.entity.UrlMonitorEntity;
-import com.woniu.netmonitor.vo.AuthUserInfo;
+import com.woniu.netmonitor.util.*;
+import com.woniu.netmonitor.vo.JsonResult;
 import com.woniu.netmonitor.vo.NetLabelVo;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author sa
  */
 public class NetLabelManager {
+
+    private ServerEndpointBean serverEndpointBean = (ServerEndpointBean) SpringUtil.getBean("serverEndpointBean");
+    private WebClientUtil webClientBean = (WebClientUtil) SpringUtil.getBean("webClientBean");
 
     private List<NetLabelVo> netLabelVos;
     private List<UrlMonitorEntity> urlMonitorFullEntities;
@@ -32,32 +36,43 @@ public class NetLabelManager {
     private DefaultListModel jListModel;
     private DefaultListModel jListModelUrl;
 
+    private Integer lastListIndex = 0;
+
+    private NetMonitorClinet netMonitorClinet;
+
     public NetLabelManager() {
         initComponents();
     }
 
-    public void showFrame(){
+    public void showFrame() {
         NetLabelMng.setVisible(true);
     }
 
-    public NetLabelManager(List<NetLabelVo> netLabelVos, List<UrlMonitorEntity> urlMonitorFullEntities){
+    public void closeFrame(){
+        NetLabelMng.dispose();
+    }
+
+    public NetLabelManager(List<NetLabelVo> netLabelVos,
+                           List<UrlMonitorEntity> urlMonitorFullEntities,
+                           NetMonitorClinet netMonitorClinet) {
         initComponents();
         this.netLabelVos = netLabelVos;
         this.urlMonitorFullEntities = urlMonitorFullEntities;
+        this.netMonitorClinet = netMonitorClinet;
         initCustomComp();
     }
 
-    private void initCustomComp(){
+    private void initCustomComp() {
         NetLabelMng.setDefaultCloseOperation(2);
         btn_labelSave.setEnabled(false);
-        if (JList_label.isSelectionEmpty()){
+        if (JList_label.isSelectionEmpty()) {
             btn_labelUpd.setEnabled(false);
         }
         jListModel = new DefaultListModel();
         jListModelUrl = new DefaultListModel();
         JList_label_url.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         JList_label_url.setCellRenderer(new SelectedList());
-        JList_label_url.setSelectionModel(new DefaultListSelectionModel(){
+        JList_label_url.setSelectionModel(new DefaultListSelectionModel() {
             @Override
             public void setSelectionInterval(int index0, int index1) {
                 if (super.isSelectedIndex(index0))
@@ -67,32 +82,25 @@ public class NetLabelManager {
             }
         });
         JList_label_url.setEnabled(false);
+
+        JList_label.setModel(jListModel);
+        JList_label_url.setModel(jListModelUrl);
         jPopupMenu = new JPopupMenu();
-        jPopupMenu.add(new JMenuItem("删除"));
-        jPopupMenu.addMenuKeyListener(new MenuKeyListener() {
-            @Override
-            public void menuKeyTyped(MenuKeyEvent e) {
+        //jMenu = new JMenu("标签");
+        jMenuItemRemove = new JMenuItem("删除");
+        jMenuItemAdd = new JMenuItem("添加");
+        jPopupMenu.add(jMenuItemAdd);
+        jPopupMenu.add(jMenuItemRemove);
+        jPopupMenu.addSeparator();
 
-            }
-
-            @Override
-            public void menuKeyPressed(MenuKeyEvent e) {
-
-            }
-
-            @Override
-            public void menuKeyReleased(MenuKeyEvent e) {
-
-            }
-        });
         JList_label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger() && JList_label.getSelectedIndex()!=-1) {
+                if (e.isPopupTrigger() && JList_label.getSelectedIndex() != -1) {
                     //获取选择项的值
-                    Object selected = JList_label.getModel().getElementAt(JList_label.getSelectedIndex());
+                    //Object selected = JList_label.getModel().getElementAt(JList_label.getSelectedIndex());
                     //System.out.println(selected);
-                    jPopupMenu.show(e.getComponent(),e.getX(), e.getY());
+                    jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -100,25 +108,34 @@ public class NetLabelManager {
         listenEventRegister();
     }
 
-    private void updateListLabel(){
-        netLabelVos.forEach(t-> jListModel.addElement(t));
-        urlMonitorFullEntities.forEach(t->jListModelUrl.addElement(t));
-        JList_label.setModel(jListModel);
-        JList_label_url.setModel(jListModelUrl);
+    public void updateListLabel() {
+        jListModel.clear();
+        jListModelUrl.clear();
+        netLabelVos.forEach(t -> jListModel.addElement(t));
+        urlMonitorFullEntities.forEach(t -> jListModelUrl.addElement(t));
     }
 
-    private void updateListUrlSelection(String urlsStr){
+    public void updateListLabel(List<NetLabelVo> netLabelVos){
+        this.netLabelVos = netLabelVos;
+        updateListLabel();
+    }
+
+    private void updateListUrlSelection(String urlsStr) {
         JList_label_url.clearSelection();
+        if (StringUtils.isBlank(urlsStr)){
+            return;
+        }
         List<String> urlIdList = Arrays.asList(urlsStr.split(","));
-        for (int i = 0; i < urlMonitorFullEntities.size(); i++){
+        for (int i = 0; i < urlMonitorFullEntities.size(); i++) {
             UrlMonitorEntity value = (UrlMonitorEntity) JList_label_url.getModel().getElementAt(i);
-            if (urlIdList.contains(value.getUrlId())){
+            if (urlIdList.contains(value.getUrlId())) {
                 JList_label_url.setSelectedIndex(i);
             }
         }
+        JList_label_url.setEnabled(false);
     }
 
-    private void listenEventRegister(){
+    private void listenEventRegister() {
 
         /**
          * 修改按钮
@@ -130,6 +147,19 @@ public class NetLabelManager {
 
         btn_labelSave.addActionListener(e -> {
             btn_labelUpd.setEnabled(false);
+            NetLabelVo netLabelVo = (NetLabelVo) JList_label.getSelectedValue();
+            String newLabelNetList = "";
+            List<UrlMonitorEntity> entities = JList_label_url.getSelectedValuesList();
+            if (entities.size() != 0){
+                newLabelNetList = entities.stream().map(UrlMonitorEntity::getUrlId).map(String::valueOf).collect(Collectors.joining(","));
+            }
+            netLabelVo.setNetList(newLabelNetList);
+
+            JsonResult jsonResult = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetLabelAddOrUpdEndpoint(), JsonResult.class, netLabelVo);
+            if (jsonResult.getReturnCode().equals(JsonResult.SUCC)){
+                JFrameUtil.messageFrame(NetLabelMng, MessageBoxType.INFO, "标签：" + netLabelVo.getLabelName() + "修改成功");
+                netMonitorClinet.refreshLabelCombox();
+            }
 
             JList_label_url.setEnabled(false);
             btn_labelSave.setEnabled(false);
@@ -138,16 +168,62 @@ public class NetLabelManager {
          * 标签选中事件
          */
         JList_label.addListSelectionListener(e -> {
-
-            NetLabelVo netLabelVo = (NetLabelVo) JList_label.getSelectedValue();
-            updateListUrlSelection(netLabelVo.getNetList());
-
+            Integer idx = JList_label.getSelectedIndex();
+            //每次变化后在刷新右边列表
+            if (lastListIndex != idx){
+                NetLabelVo netLabelVo = (NetLabelVo) JList_label.getSelectedValue();
+                String netList = "";
+                if (netLabelVo != null){
+                    netList = netLabelVo.getNetList();
+                }
+                updateListUrlSelection(netList);
+                lastListIndex = idx;
+            }
             btn_labelSave.setEnabled(false);
-            if (JList_label.isSelectionEmpty()){
+            if (JList_label.isSelectionEmpty()) {
                 btn_labelUpd.setEnabled(false);
-            }else {
+            } else {
                 btn_labelUpd.setEnabled(true);
             }
+        });
+        /**
+         * 右击弹出菜单监听事件
+         */
+        jMenuItemAdd.addActionListener(e -> {
+            //webClientBean
+            String newLabelName = JOptionPane.showInputDialog(NetLabelMng, "new label name:\n", "new",
+                    JOptionPane.PLAIN_MESSAGE);
+            if (StringUtils.isBlank(newLabelName)){
+                return;
+            }
+            NetLabelVo newLabelVo = new NetLabelVo();
+            newLabelVo.setCreateTime(DateUtil.DateToString(new Date()));
+            newLabelVo.setLabelName(newLabelName);
+            JsonResult jsonResult = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetLabelAddOrUpdEndpoint(), JsonResult.class, newLabelVo);
+            if (jsonResult.getReturnCode().equals(JsonResult.SUCC)){
+                JFrameUtil.messageFrame(NetLabelMng, MessageBoxType.INFO, "标签：" + newLabelName + "新增成功");
+                netMonitorClinet.refreshLabelCombox();
+            }
+        });
+
+        jMenuItemRemove.addActionListener(e -> {
+            NetLabelVo selected = (NetLabelVo) JList_label.getModel().getElementAt(JList_label.getSelectedIndex());
+            if (selected == null) {
+                return;
+            }
+            int result = JOptionPane.showConfirmDialog(NetLabelMng, "确认删除标签 "+ selected.getLabelName()+"?",
+                    "提示",
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION){
+                JsonResult jsonResult = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetLabelDelEndpoint(), JsonResult.class, selected.getLabelId());
+                if (jsonResult.getReturnCode().equals(JsonResult.SUCC)) {
+                    JFrameUtil.messageFrame(NetLabelMng, MessageBoxType.INFO, "标签：" + selected.getLabelName() + "删除成功");
+                    netMonitorClinet.refreshLabelCombox();
+                }else {
+                    JFrameUtil.messageFrame(NetLabelMng, MessageBoxType.INFO, "标签：" + selected.getLabelName() + "删除失败");
+                }
+            }
+
         });
 
 
@@ -163,7 +239,6 @@ public class NetLabelManager {
         panel1 = new JPanel();
         scrollPane1 = new JScrollPane();
         JList_label = new JList();
-        button1 = new JButton();
         scrollPane2 = new JScrollPane();
         JList_label_url = new JList();
         panel3 = new JPanel();
@@ -203,17 +278,13 @@ public class NetLabelManager {
                     {
                         panel1.setLayout(new FormLayout(
                             "16dlu:grow",
-                            "66dlu:grow, $lgap, default"));
+                            "64dlu:grow"));
 
                         //======== scrollPane1 ========
                         {
                             scrollPane1.setViewportView(JList_label);
                         }
                         panel1.add(scrollPane1, CC.xy(1, 1));
-
-                        //---- button1 ----
-                        button1.setText("+");
-                        panel1.add(button1, CC.xy(1, 3));
                     }
                     splitPane1.setLeftComponent(panel1);
 
@@ -255,7 +326,6 @@ public class NetLabelManager {
     private JPanel panel1;
     private JScrollPane scrollPane1;
     private JList JList_label;
-    private JButton button1;
     private JScrollPane scrollPane2;
     private JList JList_label_url;
     private JPanel panel3;
@@ -264,4 +334,5 @@ public class NetLabelManager {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private JPopupMenu jPopupMenu;
+    private JMenuItem jMenuItemAdd, jMenuItemRemove;
 }
