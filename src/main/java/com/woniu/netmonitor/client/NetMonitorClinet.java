@@ -145,8 +145,8 @@ public class NetMonitorClinet {
             monitorFrame.setTitle("netMonitor");
             Container monitorFrameContentPane = monitorFrame.getContentPane();
             monitorFrameContentPane.setLayout(new FormLayout(
-                    "default",
-                    "9*(default, $lgap), default"));
+                "default",
+                "9*(default, $lgap), default"));
 
             //======== subpanel1 ========
             {
@@ -304,9 +304,9 @@ public class NetMonitorClinet {
                 subpanel5.add(lb_desc);
 
                 //---- cb_desc ----
-                cb_desc.setModel(new DefaultComboBoxModel<>(new String[]{
-                        "\u65f6\u95f4 \u7f51\u7ad9",
-                        "\u7f51\u7ad9 \u65f6\u95f4"
+                cb_desc.setModel(new DefaultComboBoxModel<>(new String[] {
+                    "\u65f6\u95f4 \u7f51\u7ad9",
+                    "\u7f51\u7ad9 \u65f6\u95f4"
                 }));
                 subpanel5.add(cb_desc);
             }
@@ -520,6 +520,8 @@ public class NetMonitorClinet {
             area = txt_areaFilter.getText();
             netName = txt_netName.getText();
 
+            String netList = ((NetLabelVo) cb_label.getSelectedItem()).getNetList();
+            netInfoQueryParamVo.setNetList(netList);
             netInfoQueryParamVo.setLatestDays(lastDays);
             netInfoQueryParamVo.setDescType(descOrder);
             if (!StringUtils.isEmpty(area) && ckArea) {
@@ -583,7 +585,8 @@ public class NetMonitorClinet {
         long start = System.currentTimeMillis();
         lb_updateState.setVisible(true);
         lb_updateState.setText("更新中...");
-        JsonResult jsonResult = webClientBean.webClientGetMethodAsync(serverEndpointBean.getNetArticlePersistenceServerEndPoint(), JsonResult.class);
+        NetLabelVo labelVo = (NetLabelVo) cb_label.getSelectedItem();
+        JsonResult jsonResult = webClientBean.webClientPostMethodAsync(serverEndpointBean.getNetArticlePersistenceServerEndPoint(), JsonResult.class, labelVo.getNetList());
         long end = System.currentTimeMillis();
         String res;
         if (jsonResult.getReturnCode().equals("SUCC")) {
@@ -827,7 +830,7 @@ public class NetMonitorClinet {
      */
     public void refreshLabelCombox() {
         cb_label.removeAllItems();
-        cb_label.addItem(new NetLabelVo("全部"));
+        cb_label.addItem(new NetLabelVo("全部", ""));
         JsonResult jsonResult = webClientBean.webClientGetMethodAsync(
                 serverEndpointBean.getNetLabelQueryEndpoint(),
                 JsonResult.class);

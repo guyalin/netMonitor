@@ -16,8 +16,9 @@ public class NetLabelVo {
     private String netList;
     private String createTime;
 
-    public NetLabelVo(String labelName){
+    public NetLabelVo(String labelName, String netList){
         this.labelName = labelName;
+        this.netList = netList;
     }
 
     @Override

@@ -28,6 +28,7 @@ import com.woniu.netmonitor.vo.JsonResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author gyl
@@ -65,8 +66,8 @@ public class UrlInfoAdd {
         txt_connectUrl = new JTextField();
         label11 = new JLabel();
         textField4 = new JTextField();
-        hSpacer3 = new JPanel(null);
-        hSpacer5 = new JPanel(null);
+        label2 = new JLabel();
+        txt_rootUrl = new JTextField();
         hSpacer6 = new JPanel(null);
         hSpacer4 = new JPanel(null);
         hSpacer7 = new JPanel(null);
@@ -129,6 +130,8 @@ public class UrlInfoAdd {
         txt_ifActiveAsync = new JTextField();
         label39 = new JLabel();
         txt_ifExcludeCdata = new JTextField();
+        label1 = new JLabel();
+        txt_translate = new JTextField();
         label40 = new JLabel();
         txt_recordRootTag = new JTextField();
         label41 = new JLabel();
@@ -204,8 +207,12 @@ public class UrlInfoAdd {
                     label11.setHorizontalAlignment(SwingConstants.RIGHT);
                     panel2.add(label11);
                     panel2.add(textField4);
-                    panel2.add(hSpacer3);
-                    panel2.add(hSpacer5);
+
+                    //---- label2 ----
+                    label2.setText("\u6839\u7f51\u5740");
+                    label2.setHorizontalAlignment(SwingConstants.RIGHT);
+                    panel2.add(label2);
+                    panel2.add(txt_rootUrl);
                     panel2.add(hSpacer6);
                     panel2.add(hSpacer4);
                     panel2.add(hSpacer7);
@@ -317,7 +324,7 @@ public class UrlInfoAdd {
 
                 //======== panel4 ========
                 {
-                    panel4.setLayout(new GridLayout(16, 2));
+                    panel4.setLayout(new GridLayout(17, 2));
 
                     //---- label36 ----
                     label36.setText("\u5217\u8868\u8bb0\u5f55\u8fc7\u6ee4");
@@ -342,6 +349,12 @@ public class UrlInfoAdd {
                     label39.setHorizontalAlignment(SwingConstants.RIGHT);
                     panel4.add(label39);
                     panel4.add(txt_ifExcludeCdata);
+
+                    //---- label1 ----
+                    label1.setText("isTranslate");
+                    label1.setHorizontalAlignment(SwingConstants.RIGHT);
+                    panel4.add(label1);
+                    panel4.add(txt_translate);
 
                     //---- label40 ----
                     label40.setText("rootTag");
@@ -469,9 +482,10 @@ public class UrlInfoAdd {
                 List<ArticleRecord> articleRecords = JSONArray.toList(jsonArray, new ArticleRecord(), new JsonConfig());
                 StringBuilder testRecord = new StringBuilder();
                 for (ArticleRecord entity : articleRecords) {
-                    testRecord.append(entity.getArticleName()).append(":").
-                            append(entity.getArticleTitle()).append(":").
-                            append(entity.getTargetUrl()).append("\n");
+                    testRecord.append(entity.getArticleName()).append(":::").
+                            append(entity.getArticleTitle()).append(":::").
+                            append(entity.getTargetUrl()).append(":::").
+                            append(entity.getDateTime()).append("\n");
                 }
                 txta_test.setText(testRecord.toString());
             }catch (Exception ex){
@@ -484,9 +498,9 @@ public class UrlInfoAdd {
          * 保存激活按钮事件
          */
         btn_save.addActionListener(e -> {
-            AuthUserInfo authUserInfo = webClientBean.getAuthUserInfo();
-            String hostName = authUserInfo.getUserId();
-            String serverUrlSavePath = serverEndpointBean.getNetUrlSaveEndpoint() + "/" + hostName;
+            //AuthUserInfo authUserInfo = webClientBean.getAuthUserInfo();
+            //String hostName = authUserInfo.getUserId();
+            String serverUrlSavePath = serverEndpointBean.getNetUrlSaveEndpoint();
             JSONObject responseEntity = webClientBean.webClientPostMethodAsync(serverUrlSavePath, JSONObject.class, urlMonitorEntity);
             String resultCode = responseEntity.getString("returnCode");
             if (resultCode.equals("0")){
@@ -509,6 +523,7 @@ public class UrlInfoAdd {
         stringMap.put("txt_area", txt_area.getText());
         stringMap.put("txt_urlName", txt_urlName.getText());
         stringMap.put("txt_connectUrl", txt_connectUrl.getText());
+        stringMap.put("txt_rootUrl", txt_rootUrl.getText());
         //childFilter
         stringMap.put("chb_ifChildFilter", Boolean.toString(chb_ifChildFilter.isSelected()));
         stringMap.put("txt_pageRootTag", txt_pageRootTag.getText());
@@ -537,6 +552,7 @@ public class UrlInfoAdd {
         stringMap.put("txt_dateTagLocation", txt_dateTagLocation.getText());
         stringMap.put("txt_dateFilterStr", txt_dateFilterStr.getText());
         stringMap.put("txt_urlRecordTag", txt_urlRecordTag.getText());
+        stringMap.put("txt_isTranslate", txt_translate.getText());
 
         localPropertyBean.saveProperty(stringMap);
     }
@@ -546,6 +562,7 @@ public class UrlInfoAdd {
         txt_area.setText(localPropertyBean.getProperty("txt_area"));
         txt_urlName.setText(localPropertyBean.getProperty("txt_urlName"));
         txt_connectUrl.setText(localPropertyBean.getProperty("txt_connectUrl"));
+        txt_rootUrl.setText(localPropertyBean.getProperty("txt_rootUrl"));
         //childFilter
         Boolean ck_ifChildFilter = (new Boolean(localPropertyBean.getProperty("chb_ifChildFilter"))).booleanValue();
         if (ck_ifChildFilter) {
@@ -578,11 +595,17 @@ public class UrlInfoAdd {
         txt_dateTagLocation.setText(localPropertyBean.getProperty("txt_dateTagLocation"));
         txt_dateFilterStr.setText(localPropertyBean.getProperty("txt_dateFilterStr"));
         txt_urlRecordTag.setText(localPropertyBean.getProperty("txt_urlRecordTag"));
+        txt_translate.setText(localPropertyBean.getProperty("txt_isTranslate"));
     }
 
 
     private void initNetUrlVo() {
-        urlMonitorEntity = new UrlMonitorEntity(txt_area.getText(), txt_urlName.getText(), txt_connectUrl.getText());
+        urlMonitorEntity = new UrlMonitorEntity(txt_area.getText(),
+                txt_urlName.getText(),
+                txt_connectUrl.getText(),
+                StringUtils.isBlank(txt_translate.getText()) ? null :
+                        (txt_translate.getText().matches("\\d+") ? Integer.parseInt(txt_translate.getText()) : null),
+                txt_rootUrl.getText());
 
         if (chb_ifChildFilter.isSelected()) {
             netChildFilter = new NetChildFilter();
@@ -642,8 +665,8 @@ public class UrlInfoAdd {
     private JTextField txt_connectUrl;
     private JLabel label11;
     private JTextField textField4;
-    private JPanel hSpacer3;
-    private JPanel hSpacer5;
+    private JLabel label2;
+    private JTextField txt_rootUrl;
     private JPanel hSpacer6;
     private JPanel hSpacer4;
     private JPanel hSpacer7;
@@ -706,6 +729,8 @@ public class UrlInfoAdd {
     private JTextField txt_ifActiveAsync;
     private JLabel label39;
     private JTextField txt_ifExcludeCdata;
+    private JLabel label1;
+    private JTextField txt_translate;
     private JLabel label40;
     private JTextField txt_recordRootTag;
     private JLabel label41;

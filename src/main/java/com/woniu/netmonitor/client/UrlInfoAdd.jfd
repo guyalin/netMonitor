@@ -59,11 +59,13 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "textField4"
 					} )
-					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-						name: "hSpacer3"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "根网址"
+						"horizontalAlignment": 4
 					} )
-					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-						name: "hSpacer5"
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_rootUrl"
 					} )
 					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
 						name: "hSpacer6"
@@ -254,7 +256,7 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
 					"columns": 2
-					"rows": 16
+					"rows": 17
 				} ) {
 					name: "panel4"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -288,6 +290,14 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "txt_ifExcludeCdata"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "isTranslate"
+						"horizontalAlignment": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txt_translate"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label40"
